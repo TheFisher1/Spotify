@@ -10,6 +10,8 @@
 
   <modules>
     <module>users</module>
+    <module>media</module>
+    <module>api-gateway</module>
   </modules>
 
   <dependencyManagement>

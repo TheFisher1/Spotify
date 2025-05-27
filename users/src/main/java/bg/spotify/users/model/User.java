@@ -14,12 +14,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @NoArgsConstructor
 public class User {
-    public User(UserDto user) {
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.username = user.getUsername();
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
