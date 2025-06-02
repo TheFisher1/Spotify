@@ -51,6 +51,11 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public List<Album> searchAlbums(String query) {
-        return albumRepository.findByNameContainingIgnoreCaseOrArtistContainingIgnoreCase(query, query);
+        return albumRepository.findByNameContainingIgnoreCaseOrArtist_NameContainingIgnoreCase(query, query);
+    }
+
+    @Override
+    public List<Album> getAlbumsByArtistId(Long artistId) {
+        return albumRepository.findByArtistId(artistId);
     }
 }

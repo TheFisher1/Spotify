@@ -9,5 +9,6 @@ import fmi.spotify.media.model.Album;
 
 @Repository
 public interface AlbumRepository extends JpaRepository<Album, Long> {
-    List<Album> findByNameContainingIgnoreCaseOrArtistContainingIgnoreCase(String name, String artist);
+    List<Album> findByNameContainingIgnoreCaseOrArtist_NameContainingIgnoreCase(String name, String artistName);
+    List<Album> findByArtistId(Long artistId);
 } 

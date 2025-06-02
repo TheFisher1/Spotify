@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -27,7 +29,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        User existingUser = userRepository.getUserById(id);
+        Optional<User> optionalUser = userRepository.getUserById(id);
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+        User existingUser = optionalUser.get();
         existingUser.setUsername(user.getUsername());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());

@@ -12,4 +12,5 @@ public interface AlbumService {
     Optional<Album> updateAlbum(Long id, Album album);
     void deleteAlbum(Long id);
     List<Album> searchAlbums(String query);
+    List<Album> getAlbumsByArtistId(Long artistId);
 } 

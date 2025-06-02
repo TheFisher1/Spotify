@@ -58,4 +58,14 @@ public class SongController {
     public ResponseEntity<List<Song>> searchSongs(@RequestParam String query) {
         return ResponseEntity.ok(songService.searchSongs(query));
     }
+
+    @GetMapping("/artists/{artistId}")
+    public ResponseEntity<List<Song>> getSongsByArtist(@PathVariable Long artistId) {
+        List<Song> songs = songService.getSongsByArtistId(artistId);
+        if (songs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(songs);
+    }
+
 }

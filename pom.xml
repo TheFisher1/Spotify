@@ -12,6 +12,8 @@
     <module>users</module>
     <module>media</module>
     <module>api-gateway</module>
+    <module>artist</module>
+    <module>actions</module>
   </modules>
 
   <dependencyManagement>

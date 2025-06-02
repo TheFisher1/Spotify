@@ -27,6 +27,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Song createSong(Song song) {
+        System.out.println("Received song: " + song.getTitle());
         return songRepository.save(song);
     }
 
@@ -46,6 +47,11 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public List<Song> searchSongs(String query) {
-        return songRepository.findByTitleContainingIgnoreCaseOrArtistContainingIgnoreCase(query, query);
+        return songRepository.findByTitleContainingIgnoreCaseOrArtist_NameContainingIgnoreCase(query, query);
+    }
+
+    @Override
+    public List<Song> getSongsByArtistId(Long artistId) {
+        return songRepository.findByArtist_Id(artistId);
     }
 } 

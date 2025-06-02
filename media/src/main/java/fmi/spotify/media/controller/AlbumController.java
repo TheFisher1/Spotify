@@ -58,4 +58,10 @@ public class AlbumController {
     public ResponseEntity<List<Album>> searchAlbums(@RequestParam String query) {
         return ResponseEntity.ok(albumService.searchAlbums(query));
     }
+
+    @GetMapping("/artists/{artistId}")
+    public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable Long artistId) {
+        List<Album> albums = albumService.getAlbumsByArtistId(artistId);
+        return albums.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(albums);
+    }
 }
