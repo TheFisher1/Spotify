@@ -3,6 +3,7 @@ package bg.spotify.actions.service.impl;
 import bg.spotify.actions.model.Like;
 import bg.spotify.actions.repository.LikeRepository;
 import bg.spotify.actions.service.LikeService;
+import bg.spotify.recommendations.service.RecommendationService;
 import bg.spotify.users.exceptions.UserNotFoundException;
 import bg.spotify.users.model.User;
 import bg.spotify.users.repository.UserRepository;
@@ -22,6 +23,8 @@ public class LikeServiceImpl implements LikeService {
     private SongRepository songRepository;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private RecommendationService recommendationService;
 
     @Override
     public void likeSong(Long userId, Long songId) {
@@ -37,6 +40,7 @@ public class LikeServiceImpl implements LikeService {
                 .song(song)
                 .build();
             likeRepository.save(like);
+            recommendationService.addBookmark(userId, songId);
         }
     }
 
@@ -48,7 +52,10 @@ public class LikeServiceImpl implements LikeService {
             .orElseThrow(SongNotFoundException::new);
 
         likeRepository.findByUserAndSong(user, song)
-            .ifPresent(likeRepository::delete);
+            .ifPresent(existingLike -> {
+                likeRepository.delete(existingLike);
+                recommendationService.removeBookmark(userId, songId);
+            });
     }
 
     @Override

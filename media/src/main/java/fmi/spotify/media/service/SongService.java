@@ -7,7 +7,7 @@ import fmi.spotify.media.model.Song;
 
 public interface SongService {
     List<Song> getAllSongs();
-    Optional<Song> getSongById(Long id);
+    Optional<Song> getSongById(Long userId, Long songId);
     Song createSong(Song song);
     Optional<Song> updateSong(Long id, Song song);
     void deleteSong(Long id);

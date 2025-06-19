@@ -1,6 +1,5 @@
 package bg.spotify.artist.service.impl;
 
-import bg.spotify.artist.exceptions.ArtistNotFoundException;
 import bg.spotify.artist.model.Artist;
 import bg.spotify.artist.repository.ArtistRepository;
 import bg.spotify.artist.service.ArtistService;
@@ -31,14 +30,13 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Artist updateArtist(Long id, Artist updatedArtist) {
-        return artistRepository.findById(id)
-            .map(existing -> {
-                existing.setName(updatedArtist.getName());
-                existing.setInfo(updatedArtist.getInfo());
-                return artistRepository.save(existing);
-            })
-            .orElseThrow(ArtistNotFoundException::new);
+    public Optional<Artist> updateArtist(Long id, Artist updatedArtist) {
+        if (artistRepository.existsById(id)) {
+            updatedArtist.setId(id);
+            return Optional.of(artistRepository.save(updatedArtist));
+        }
+
+        return Optional.empty();
     }
 
     @Override

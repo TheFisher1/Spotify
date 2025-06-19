@@ -26,4 +26,13 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column
+    private int age;
+
+    @Column
+    private String gender;
+
+    @Column
+    private String country;
 }

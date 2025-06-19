@@ -29,9 +29,9 @@ public class SongController {
         return ResponseEntity.ok(songService.getAllSongs());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable Long id) {
-        return songService.getSongById(id)
+    @GetMapping("/{songId}")
+    public ResponseEntity<Song> getSongById(@RequestParam Long userId,@PathVariable Long songId) {
+        return songService.getSongById(userId, songId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

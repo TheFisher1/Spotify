@@ -14,6 +14,7 @@
     <module>api-gateway</module>
     <module>artist</module>
     <module>actions</module>
+    <module>recommendations</module>
   </modules>
 
   <dependencyManagement>
@@ -27,6 +28,12 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+  </dependencies>
 
   <properties>
     <java.version>24</java.version>

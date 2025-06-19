@@ -1,5 +1,6 @@
 package bg.spotify.users.service.impl;
 
+import bg.spotify.recommendations.service.RecommendationService;
 import bg.spotify.users.exceptions.AlreadyExistingUserException;
 import bg.spotify.users.exceptions.UserNotFoundException;
 import bg.spotify.users.exceptions.WrongCredentialException;
@@ -17,11 +18,13 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RecommendationService recommendaionService;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -58,11 +61,14 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
-        user.setUsername(registrationForm.getUsername());
+        String username = registrationForm.getUsername();
+        user.setUsername(username);
         user.setEmail(registrationForm.getEmail());
         user.setPassword(passwordEncoder.encode(registrationForm.getPassword()));
 
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        recommendaionService.addNewUser(saved.getId(), username, saved.getAge(), saved.getGender(), saved.getCountry());
+        return saved;
     }
 
 }

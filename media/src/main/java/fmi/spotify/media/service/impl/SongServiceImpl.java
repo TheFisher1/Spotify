@@ -3,6 +3,11 @@ package fmi.spotify.media.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import bg.spotify.artist.model.Artist;
+import bg.spotify.artist.repository.ArtistRepository;
+import bg.spotify.recommendations.service.RecommendationService;
+import fmi.spotify.media.model.Album;
+import fmi.spotify.media.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +19,33 @@ import fmi.spotify.media.service.SongService;
 public class SongServiceImpl implements SongService {
     @Autowired
     private SongRepository songRepository;
-
+    @Autowired
+    private RecommendationService recommendationService;
+    @Autowired
+    private ArtistRepository artistRepository;
+    @Autowired
+    private AlbumRepository albumRepository;
     @Override
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
 
     @Override
-    public Optional<Song> getSongById(Long id) {
-        return songRepository.findById(id);
+    public Optional<Song> getSongById(Long userId, Long songId) {
+        recommendationService.recordSongClick(userId, songId);
+        return songRepository.findById(songId);
     }
 
     @Override
     public Song createSong(Song song) {
-        System.out.println("Received song: " + song.getTitle());
-        return songRepository.save(song);
+        Song saved = songRepository.save(song);
+        String albumName = albumRepository.findById(saved.getAlbum().getId()).map(Album::getName).orElse(null);
+        String artistName = artistRepository.findById(saved.getArtist().getId()).map(Artist::getName).orElse(null);
+
+        recommendationService.addNewSong(saved.getId(), saved.getTitle(), artistName,
+            albumName, saved.getGenre());
+
+        return saved;
     }
 
     @Override
