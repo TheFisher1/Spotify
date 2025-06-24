@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { ListFilterIcon, GridIcon, ClockIcon } from 'lucide-react';
+
 interface LibraryProps {
   setCurrentTrack: (track: any) => void;
   handlePlayPause: () => void;
 }
+
 const Library: React.FC<LibraryProps> = ({
   setCurrentTrack,
   handlePlayPause
