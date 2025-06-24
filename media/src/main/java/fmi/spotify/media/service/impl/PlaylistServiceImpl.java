@@ -15,15 +15,12 @@ import fmi.spotify.media.service.PlaylistService;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
-
-    private final PlaylistRepository playlistRepository;
-    private final SongRepository songRepository;
-
+    
     @Autowired
-    public PlaylistServiceImpl(PlaylistRepository playlistRepository, SongRepository songRepository) {
-        this.playlistRepository = playlistRepository;
-        this.songRepository = songRepository;
-    }
+    private PlaylistRepository playlistRepository;
+    
+    @Autowired
+    private SongRepository songRepository;
 
     @Override
     public List<Playlist> getAllPlaylists() {
