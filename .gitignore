@@ -28,5 +28,6 @@ replay_pid*
 
 target/
 
-application.*
+application.properties
+
 node_modules/

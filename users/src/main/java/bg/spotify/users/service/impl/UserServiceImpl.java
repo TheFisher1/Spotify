@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
+    @Autowired(required = false)
     private RecommendationService recommendaionService;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -67,7 +67,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(registrationForm.getPassword()));
 
         User saved = userRepository.save(user);
-        recommendaionService.addNewUser(saved.getId(), username, saved.getAge(), saved.getGender(), saved.getCountry());
+        if (recommendaionService != null) {
+            recommendaionService.addNewUser(saved.getId(), username, saved.getAge(), saved.getGender(), saved.getCountry());
+        }
         return saved;
     }
 
