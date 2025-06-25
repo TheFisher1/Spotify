@@ -18,17 +18,15 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+    
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private RecommendationService recommendaionService;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public User updateUser(Long id, User user) {
@@ -44,6 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User authenticateUser(LoginForm loginForm) {
+
         return userRepository.findByUsername(loginForm.getUsername())
                 .filter(u -> passwordEncoder.matches(loginForm.getPassword(), u.getPassword()))
                 .orElseThrow(WrongCredentialException::new);

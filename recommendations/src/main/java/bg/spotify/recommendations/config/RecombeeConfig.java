@@ -6,8 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RecombeeConfig {
+
     @Bean
-    public RecombeeClient recombeeClient() {
+    RecombeeClient recombeeClient() {
         return new RecombeeClient("database-id", "token");
     }
 }

@@ -7,14 +7,15 @@ import bg.spotify.users.model.AuthResponse;
 import bg.spotify.users.model.LoginForm;
 import bg.spotify.users.model.RegistrationForm;
 import bg.spotify.users.service.UserService;
-
 import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//${users.auth.api:/auth}
 @RestController
-@RequestMapping("${users.auth.api:/auth}")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -27,6 +28,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginForm loginForm) {
         User user = userService.authenticateUser(loginForm);
         String token = jwtUtil.generateToken(user.getUsername());
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
