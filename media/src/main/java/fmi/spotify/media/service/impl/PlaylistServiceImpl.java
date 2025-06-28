@@ -1,5 +1,6 @@
 package fmi.spotify.media.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fmi.spotify.media.model.Playlist;
 import fmi.spotify.media.model.Song;
+import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.repository.PlaylistRepository;
 import fmi.spotify.media.repository.SongRepository;
 import fmi.spotify.media.service.PlaylistService;
@@ -77,5 +79,15 @@ public class PlaylistServiceImpl implements PlaylistService {
     @Override
     public List<Playlist> getPlaylistsByUserId(Long userId) {
         return playlistRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<SongDto> getSongsInPlaylist(Long playlistId) {
+        return playlistRepository.findById(playlistId)
+                .map(Playlist::getSongs)
+                .orElseGet(HashSet::new)
+                .stream()
+                .map(song -> SongDto.fromSong(song, null, null))
+                .toList();
     }
 }

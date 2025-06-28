@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fmi.spotify.media.model.Playlist;
+import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.service.PlaylistService;
 
 @RestController
@@ -40,9 +41,9 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.createPlaylist(playlist));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long id, @RequestBody Playlist playlist) {
-        return playlistService.updatePlaylist(id, playlist)
+    @PutMapping("/{playlistId}")
+    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist) {
+        return playlistService.updatePlaylist(playlistId, playlist)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -51,6 +52,11 @@ public class PlaylistController {
     public ResponseEntity<Void> deletePlaylist(@PathVariable Long id) {
         playlistService.deletePlaylist(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{playlistId}/songs")
+    public ResponseEntity<List<SongDto>> getSongsInPlaylist(@PathVariable Long playlistId) {
+        return ResponseEntity.ok(playlistService.getSongsInPlaylist(playlistId));
     }
 
     @PostMapping("/{playlistId}/songs/{songId}")

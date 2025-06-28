@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import fmi.spotify.media.model.Playlist;
+import fmi.spotify.media.model.SongDto;
 
 public interface PlaylistService {
     List<Playlist> getAllPlaylists();
@@ -21,4 +22,6 @@ public interface PlaylistService {
     void removeSongFromPlaylist(Long playlistId, Long songId);
 
     List<Playlist> getPlaylistsByUserId(Long userId);
+
+    List<SongDto> getSongsInPlaylist(Long playlistId);
 }

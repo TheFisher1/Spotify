@@ -15,11 +15,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = "genres")
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
