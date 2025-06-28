@@ -15,3 +15,15 @@ spring.datasource.hikari.minimum-idle=
 spring.datasource.hikari.idle-timeout=
 
 media.api=
+
+# Database Seeding Configuration
+app.seed.database=true
+app.seed.force=false
+
+# Azure Blob Storage Configuration (commented out for development)
+# azure.storage.connection-string=DefaultEndpointsProtocol=https;AccountName=your-account-name;AccountKey=your-account-key;EndpointSuffix=core.windows.net
+# azure.storage.account-name=your-account-name
+# azure.storage.container-name=
+
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB

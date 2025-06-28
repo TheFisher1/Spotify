@@ -19,11 +19,11 @@ import fmi.spotify.media.service.PlaylistService;
 @RestController
 @RequestMapping("/media/playlists")
 public class PlaylistController {
-    
+
     @Autowired
     private PlaylistService playlistService;
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Playlist>> getAllPlaylists() {
         return ResponseEntity.ok(playlistService.getAllPlaylists());
     }
@@ -69,4 +69,4 @@ public class PlaylistController {
     public ResponseEntity<List<Playlist>> getPlaylistsByUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(playlistService.getPlaylistsByUserId(userId));
     }
-} 
+}

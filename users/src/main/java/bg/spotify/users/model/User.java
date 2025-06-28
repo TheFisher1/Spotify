@@ -28,7 +28,7 @@ public class User {
     private String email;
 
     @Column
-    private int age;
+    private Integer age;
 
     @Column
     private String gender;
