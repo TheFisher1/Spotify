@@ -8,16 +8,8 @@ interface Track {
   album: string;
   duration: string;
   cover: string;
-<<<<<<< Updated upstream
-  audioUrl?: string;
-  url?: string; // Azure Blob Storage URL for audio
-=======
-<<<<<<< Updated upstream
-=======
   audioUrl?: string;
   url?: string;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 }
 
 interface MusicPlayerProps {
