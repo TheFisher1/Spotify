@@ -1,0 +1,17 @@
+spring.application.name=
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=
+
+server.port=
+
+spring.jpa.hibernate.ddl-auto=
+spring.jpa.show-sql=
+spring.jpa.properties.hibernate.format_sql=
+
+spring.datasource.hikari.maximum-pool-size=
+spring.datasource.hikari.minimum-idle=
+spring.datasource.hikari.idle-timeout=
+
+media.api=
