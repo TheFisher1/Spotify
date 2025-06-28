@@ -92,13 +92,24 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public void addNewUser(Long userId, String username, int age, String gender, String country) {
+    public void addNewUser(Long userId, String username, Integer age, String gender, String country) {
         try {
+            Map<String, Object> values = new HashMap<>();
+            values.put("name", username != null ? username : "");
 
-            recombeeClient.send(new SetUserValues(userId + "", Map.of("name", username,
-                    "age", age,
-                    "gender", gender,
-                    "country", country))
+            if (age != null) {
+                values.put("age", age);
+            }
+
+            if (gender != null) {
+                values.put("gender", gender);
+            }
+
+            if (country != null) {
+                values.put("country", country);
+            }
+
+            recombeeClient.send(new SetUserValues(userId + "", values)
                     .setCascadeCreate(true));
         } catch (ApiException e) {
             log.error("Recombee exception when trying to add new user ", e);

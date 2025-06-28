@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fmi.spotify.media.model.Album;
+import fmi.spotify.media.model.AlbumDto;
 import fmi.spotify.media.service.AlbumService;
 
 @RestController
@@ -24,26 +25,26 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-    @GetMapping
-    public ResponseEntity<List<Album>> getAllAlbums() {
-        return ResponseEntity.ok(albumService.getAllAlbums());
+    @GetMapping("/")
+    public ResponseEntity<List<AlbumDto>> getAllAlbums() {
+        return ResponseEntity.ok(albumService.getAllAlbumsDto());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Album> getAlbumById(@PathVariable Long id) {
-        return albumService.getAlbumById(id)
+    public ResponseEntity<AlbumDto> getAlbumById(@PathVariable Long id) {
+        return albumService.getAlbumDtoById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Album> createAlbum(@RequestBody Album album) {
-        return ResponseEntity.ok(albumService.createAlbum(album));
+    public ResponseEntity<AlbumDto> createAlbum(@RequestBody Album album) {
+        return ResponseEntity.ok(albumService.createAlbumDto(album));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Album album) {
-        return albumService.updateAlbum(id, album)
+    public ResponseEntity<AlbumDto> updateAlbum(@PathVariable Long id, @RequestBody Album album) {
+        return albumService.updateAlbumDto(id, album)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -55,13 +56,13 @@ public class AlbumController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Album>> searchAlbums(@RequestParam String query) {
-        return ResponseEntity.ok(albumService.searchAlbums(query));
+    public ResponseEntity<List<AlbumDto>> searchAlbums(@RequestParam String query) {
+        return ResponseEntity.ok(albumService.searchAlbumsDto(query));
     }
 
     @GetMapping("/artists/{artistId}")
-    public ResponseEntity<List<Album>> getAlbumsByArtist(@PathVariable Long artistId) {
-        List<Album> albums = albumService.getAlbumsByArtistId(artistId);
+    public ResponseEntity<List<AlbumDto>> getAlbumsByArtist(@PathVariable Long artistId) {
+        List<AlbumDto> albums = albumService.getAlbumsDtoByArtistId(artistId);
         return albums.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(albums);
     }
 }

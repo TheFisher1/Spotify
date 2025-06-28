@@ -16,5 +16,5 @@ public interface RecommendationService {
 
     void removeBookmark(Long userId, Long songId);
 
-    void addNewUser(Long userId, String username, int age, String gender, String country);
+    void addNewUser(Long userId, String username, Integer age, String gender, String country);
 }

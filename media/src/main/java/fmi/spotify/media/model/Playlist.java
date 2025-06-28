@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "playlists")
 @NoArgsConstructor
 public class Playlist {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -35,11 +35,7 @@ public class Playlist {
     private Long userId;
 
     @ManyToMany
-    @JoinTable(
-        name = "playlist_songs",
-        joinColumns = @JoinColumn(name = "playlist_id"),
-        inverseJoinColumns = @JoinColumn(name = "song_id")
-    )
+    @JoinTable(name = "playlist_songs", joinColumns = @JoinColumn(name = "playlist_id"), inverseJoinColumns = @JoinColumn(name = "song_id"))
     private Set<Song> songs = new HashSet<>();
 
     @Column
@@ -47,4 +43,4 @@ public class Playlist {
 
     @Column
     private boolean isPublic = false;
-} 
+}

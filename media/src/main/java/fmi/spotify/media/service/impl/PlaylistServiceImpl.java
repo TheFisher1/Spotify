@@ -15,10 +15,10 @@ import fmi.spotify.media.service.PlaylistService;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
-    
+
     @Autowired
     private PlaylistRepository playlistRepository;
-    
+
     @Autowired
     private SongRepository songRepository;
 
@@ -59,7 +59,6 @@ public class PlaylistServiceImpl implements PlaylistService {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new RuntimeException("Song not found"));
 
-        
         playlist.getSongs().add(song);
         playlistRepository.save(playlist);
     }
@@ -79,4 +78,4 @@ public class PlaylistServiceImpl implements PlaylistService {
     public List<Playlist> getPlaylistsByUserId(Long userId) {
         return playlistRepository.findByUserId(userId);
     }
-} 
+}
