@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
-import Home from './components/pages/Home';
-import Search from './components/pages/Search';
-import Library from './components/pages/Library';
-import LandingPage from './components/pages/LandingPage';
+import Home from './pages/Home';
+import Search from './pages/Search';
+import Library from './pages/Library';
+import LandingPage from './pages/LandingPage';
 export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState('home');
@@ -39,12 +39,12 @@ export function App() {
     }
   };
   return <div className="flex flex-col h-screen bg-black text-white">
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-        <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-zinc-800 to-black">
-          {renderPage()}
-        </main>
-      </div>
-      <MusicPlayer currentTrack={currentTrack} isPlaying={isPlaying} handlePlayPause={handlePlayPause} />
-    </div>;
+    <div className="flex flex-1 overflow-hidden">
+      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <main className="flex-1 overflow-y-auto p-6 bg-gradient-to-b from-zinc-800 to-black">
+        {renderPage()}
+      </main>
+    </div>
+    <MusicPlayer currentTrack={currentTrack} isPlaying={isPlaying} handlePlayPause={handlePlayPause} />
+  </div>;
 }

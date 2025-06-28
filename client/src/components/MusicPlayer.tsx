@@ -97,6 +97,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         }}></div>
         </div>
       </div>
-    </div>;
+    </div>
 };
 export default MusicPlayer;
