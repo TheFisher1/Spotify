@@ -30,7 +30,6 @@ export interface Song {
     thumbnail?: string;
     url?: string;
     genre?: string;
-    filePath?: string;
 }
 
 export interface Album {

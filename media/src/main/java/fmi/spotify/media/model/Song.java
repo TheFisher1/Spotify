@@ -1,6 +1,8 @@
 package fmi.spotify.media.model;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 import bg.spotify.artist.model.Artist;
 import jakarta.persistence.Column;
@@ -9,11 +11,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = "genres")
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +31,6 @@ public class Song {
     @Column
     private Duration duration;
 
-    @Column
-    private String genre;
-
-    @Column
-    private String filePath;
-
     @ManyToOne
     @JoinColumn(name = "album_id")
     private Album album;
@@ -39,4 +39,7 @@ public class Song {
     @JoinColumn(name = "artist_id")
     private Artist artist;
 
+    @ManyToMany
+    @JoinTable(name = "song_genres", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genres = new HashSet<>();
 }

@@ -1,0 +1,71 @@
+INSERT INTO genre (name, description) VALUES
+('Electronic', 'Electronic dance music and electronic sounds'),
+('Indie Pop', 'Independent pop music with alternative influences'),
+('Alternative Rock', 'Alternative rock music with experimental elements'),
+('Pop Rock', 'Pop music with rock influences'),
+('Reggaeton', 'Latin American music with reggae and hip-hop influences'),
+('R&B', 'Rhythm and blues music'),
+('Pop', 'Popular music with broad appeal');
+
+INSERT INTO artist (name, info) VALUES
+('Avicii', 'Swedish DJ, remixer, record producer, musician, and songwriter who specialized in audio programming, remixing and record producing.'),
+('BANNERS', 'British singer-songwriter known for his indie pop sound and emotive vocals.'),
+('Calvin Harris', 'Scottish DJ, record producer, singer, and songwriter known for his electronic dance music.'),
+('Coldplay', 'British rock band formed in London, known for their alternative rock and pop rock sound.'),
+('Fall Out Boy', 'American rock band from Wilmette, Illinois, formed in 2001, known for their pop punk and alternative rock.'),
+('Farruko', 'Puerto Rican singer and rapper known for his Latin trap and reggaeton music.'),
+('Fun.', 'American indie pop band known for their anthemic songs and collaborations.'),
+('Imagine Dragons', 'American pop rock band from Las Vegas, known for their alternative rock and pop sound.'),
+('Janji', 'Electronic music producer known for his melodic and atmospheric tracks.'),
+('Kwabs', 'British singer-songwriter known for his soulful voice and R&B influenced music.'),
+('Panic! At The Disco', 'American rock band from Las Vegas, known for their pop rock and alternative sound.');
+
+INSERT INTO albums (name, artist_id, release_date, genre) VALUES
+('True', 1, '2013-09-13', 'Electronic'),
+('BANNERS', 2, '2019-03-01', 'Indie Pop'),
+('Motion', 3, '2014-10-31', 'Electronic'),
+('Mylo Xyloto', 4, '2011-10-24', 'Alternative Rock'),
+('American Beauty/American Psycho', 5, '2015-01-20', 'Pop Rock'),
+('La 167', 6, '2021-11-19', 'Reggaeton'),
+('Some Nights', 7, '2012-02-21', 'Indie Pop'),
+('Evolve', 8, '2017-06-23', 'Alternative Rock'),
+('Origins', 8, '2018-11-09', 'Alternative Rock'),
+('Mercury - Act 1', 8, '2021-09-03', 'Alternative Rock'),
+('Mercury - Act 2', 8, '2022-07-01', 'Alternative Rock'),
+('Electronic Vibes', 9, '2020-01-01', 'Electronic'),
+('Love + War', 10, '2015-09-11', 'R&B'),
+('Death of a Bachelor', 11, '2016-01-15', 'Pop Rock');
+
+INSERT INTO song (title, duration, album_id, artist_id) VALUES
+('Hey Brother', 255, 1, 1),
+('Someone To You', 220, 2, 2),
+('Summer', 222, 3, 3),
+('Paradise', 278, 4, 4),
+('Centuries', 228, 5, 5),
+('Pepas', 287, 6, 6),
+('We Are Young ft. Janelle Monae', 252, 7, 7),
+('Bad Liar', 260, 8, 8),
+('My Life', 222, 9, 8),
+('Wake Up', 175, 10, 8),
+('Walking The Wire', 217, 11, 8),
+('Waves', 225, 8, 8),
+('Heroes Tonight feat. Johnning', 198, 12, 9),
+('Walk', 214, 13, 10),
+('House of Memories', 208, 14, 11);
+
+INSERT INTO song_genres (song_id, genre_id) VALUES
+(1, 1),
+(2, 2),
+(3, 1),
+(4, 3),
+(5, 4),
+(6, 5),
+(7, 2),
+(8, 3),
+(9, 3),
+(10, 3),
+(11, 3),
+(12, 3),
+(13, 1),
+(14, 6),
+(15, 4); 

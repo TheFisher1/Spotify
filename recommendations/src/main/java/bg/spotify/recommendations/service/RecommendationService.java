@@ -1,6 +1,9 @@
 package bg.spotify.recommendations.service;
 
 import java.util.List;
+import java.util.Set;
+
+import fmi.spotify.media.model.Genre;
 
 public interface RecommendationService {
 
@@ -8,7 +11,7 @@ public interface RecommendationService {
 
     void recordSongPlay(Long userId, Long songId);
 
-    void addNewSong(Long songId, String title, String artist, String album, String genre);
+    void addNewSong(Long songId, String title, String artist, String album, Set<Genre> genre);
 
     List<String> getRecommendedSongs(Long userId, int count);
 

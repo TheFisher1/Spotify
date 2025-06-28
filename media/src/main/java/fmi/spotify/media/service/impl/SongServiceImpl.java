@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import bg.spotify.artist.model.Artist;
-import bg.spotify.artist.repository.ArtistRepository;
 import bg.spotify.recommendations.service.RecommendationService;
-import fmi.spotify.media.model.Album;
 import fmi.spotify.media.model.Song;
 import fmi.spotify.media.model.SongDto;
-import fmi.spotify.media.repository.AlbumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +19,6 @@ public class SongServiceImpl implements SongService {
     private SongRepository songRepository;
     @Autowired
     private RecommendationService recommendationService;
-    @Autowired
-    private ArtistRepository artistRepository;
-    @Autowired
-    private AlbumRepository albumRepository;
 
     private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";
     private static final String DEFAULT_AUDIO_URL = "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3";
@@ -62,69 +54,6 @@ public class SongServiceImpl implements SongService {
             String audioUrl = generateSongAudioUrl(song);
             return SongDto.fromSong(song, thumbnailUrl, audioUrl);
         });
-    }
-
-    @Override
-    public Song createSong(Song song) {
-        Song saved = songRepository.save(song);
-        String albumName = albumRepository.findById(saved.getAlbum().getId()).map(Album::getName).orElse(null);
-        String artistName = artistRepository.findById(saved.getArtist().getId()).map(Artist::getName).orElse(null);
-
-        recommendationService.addNewSong(saved.getId(), saved.getTitle(), artistName,
-                albumName, saved.getGenre());
-
-        return saved;
-    }
-
-    @Override
-    public SongDto createSongDto(Song song) {
-        Song saved = createSong(song);
-        String thumbnailUrl = generateSongThumbnailUrl(saved);
-        String audioUrl = generateSongAudioUrl(saved);
-        return SongDto.fromSong(saved, thumbnailUrl, audioUrl);
-    }
-
-    @Override
-    public Optional<Song> updateSong(Long id, Song song) {
-        if (songRepository.existsById(id)) {
-            song.setId(id);
-            Song savedSong = songRepository.save(song);
-            return Optional.of(savedSong);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SongDto> updateSongDto(Long id, Song song) {
-        Optional<Song> updatedSong = updateSong(id, song);
-        return updatedSong.map(savedSong -> {
-            String thumbnailUrl = generateSongThumbnailUrl(savedSong);
-            String audioUrl = generateSongAudioUrl(savedSong);
-            return SongDto.fromSong(savedSong, thumbnailUrl, audioUrl);
-        });
-    }
-
-    @Override
-    public void deleteSong(Long id) {
-        songRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Song> searchSongs(String query) {
-        return songRepository.findByTitleContainingIgnoreCaseOrArtist_NameContainingIgnoreCase(query,
-                query);
-    }
-
-    @Override
-    public List<SongDto> searchSongsDto(String query) {
-        List<Song> songs = searchSongs(query);
-        return songs.stream()
-                .map(song -> {
-                    String thumbnailUrl = generateSongThumbnailUrl(song);
-                    String audioUrl = generateSongAudioUrl(song);
-                    return SongDto.fromSong(song, thumbnailUrl, audioUrl);
-                })
-                .collect(Collectors.toList());
     }
 
     @Override

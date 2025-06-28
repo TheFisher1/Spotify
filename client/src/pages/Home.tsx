@@ -15,12 +15,16 @@ const Home: React.FC<HomeProps> = ({
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const songsData = await mediaService.getAllSongs();
+        const songsData = await mediaService.getSongs({
+          pageSize: 10,
+          pageNumber: currentPage
+        });
         setSongs(songsData);
       } catch (err: any) {
         setError('Failed to load songs');
