@@ -12,7 +12,7 @@ public class AppConfig {
     public void setUserAuthApi(String userAuthApi) {
         AppConfig.userAuthApi = userAuthApi;
     }
-    
+
     public static String getUserAuthApi() {
         return userAuthApi;
     }

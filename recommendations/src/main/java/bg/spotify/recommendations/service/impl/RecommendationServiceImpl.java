@@ -37,7 +37,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
     }
 
-
     public void recordSongPlay(Long userId, Long songId) {
         try {
             recombeeClient.send(new AddPurchase("" + userId, "" + songId));
@@ -56,9 +55,8 @@ public class RecommendationServiceImpl implements RecommendationService {
             values.put("genre", genre);
 
             recombeeClient.send(new SetItemValues(
-                 "" + songId,
-                values
-            ).setCascadeCreate(true));
+                    "" + songId,
+                    values).setCascadeCreate(true));
         } catch (ApiException e) {
             log.error("Recombee exception occurred when adding a new song", e);
         }
@@ -67,8 +65,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     public List<String> getRecommendedSongs(Long userId, int count) {
         try {
             RecommendationResponse response = recombeeClient.send(
-                new RecommendItemsToUser("" + userId,count)
-            );
+                    new RecommendItemsToUser("" + userId, count));
             return Arrays.asList(response.getIds());
         } catch (ApiException e) {
             log.error("Recombee exception occurred when requesting recommendations", e);
@@ -99,14 +96,14 @@ public class RecommendationServiceImpl implements RecommendationService {
         try {
 
             recombeeClient.send(new SetUserValues(userId + "", Map.of("name", username,
-                "age", age,
-                "gender", gender,
-                "country", country))
-                .setCascadeCreate(true));
+                    "age", age,
+                    "gender", gender,
+                    "country", country))
+                    .setCascadeCreate(true));
         } catch (ApiException e) {
             log.error("Recombee exception when trying to add new user ", e);
         }
     }
 
-    //TODO : Update user, update song
+    // TODO : Update user, update song
 }

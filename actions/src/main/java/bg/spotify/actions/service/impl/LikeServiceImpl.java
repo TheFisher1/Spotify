@@ -29,16 +29,16 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void likeSong(Long userId, Long songId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
         Song song = songRepository.findById(songId)
-            .orElseThrow(SongNotFoundException::new);
+                .orElseThrow(SongNotFoundException::new);
 
         boolean alreadyLiked = likeRepository.findByUserAndSong(user, song).isPresent();
         if (!alreadyLiked) {
             Like like = Like.builder()
-                .user(user)
-                .song(song)
-                .build();
+                    .user(user)
+                    .song(song)
+                    .build();
             likeRepository.save(like);
             recommendationService.addBookmark(userId, songId);
         }
@@ -47,15 +47,15 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public void unlikeSong(Long userId, Long songId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
         Song song = songRepository.findById(songId)
-            .orElseThrow(SongNotFoundException::new);
+                .orElseThrow(SongNotFoundException::new);
 
         likeRepository.findByUserAndSong(user, song)
-            .ifPresent(existingLike -> {
-                likeRepository.delete(existingLike);
-                recommendationService.removeBookmark(userId, songId);
-            });
+                .ifPresent(existingLike -> {
+                    likeRepository.delete(existingLike);
+                    recommendationService.removeBookmark(userId, songId);
+                });
     }
 
     @Override
@@ -64,7 +64,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public int countBySong_Id(Long songId) {
+    public int countBySongId(Long songId) {
         return likeRepository.countBySong_Id(songId);
     }
 

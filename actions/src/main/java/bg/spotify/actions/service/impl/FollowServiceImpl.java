@@ -28,16 +28,16 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public void followArtist(Long userId, Long artistId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
         Artist artist = artistRepository.findById(artistId)
-            .orElseThrow(ArtistNotFoundException::new);
+                .orElseThrow(ArtistNotFoundException::new);
 
         boolean alreadyFollowed = followRepository.findByUserAndArtist(user, artist).isPresent();
         if (!alreadyFollowed) {
             Follow follow = Follow.builder()
-                .user(user)
-                .artist(artist)
-                .build();
+                    .user(user)
+                    .artist(artist)
+                    .build();
             followRepository.save(follow);
         }
     }
@@ -45,12 +45,12 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public void unfollowArtist(Long userId, Long artistId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
         Artist artist = artistRepository.findById(artistId)
-            .orElseThrow(ArtistNotFoundException::new);
+                .orElseThrow(ArtistNotFoundException::new);
 
         followRepository.findByUserAndArtist(user, artist)
-            .ifPresent(followRepository::delete);
+                .ifPresent(followRepository::delete);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public boolean isArtistFollowedByUser(Long userId, Long artistId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
         Artist artist = artistRepository.findById(artistId)
-            .orElseThrow(ArtistNotFoundException::new);
+                .orElseThrow(ArtistNotFoundException::new);
 
         return followRepository.findByUserAndArtist(user, artist).isPresent();
     }

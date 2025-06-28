@@ -21,7 +21,6 @@ public class ArtistController {
     @Autowired
     private ArtistService artistService;
 
-
     @GetMapping
     public ResponseEntity<List<Artist>> getAllArtists() {
         return ResponseEntity.ok(artistService.getAllArtists());
@@ -30,8 +29,8 @@ public class ArtistController {
     @GetMapping("/{id}")
     public ResponseEntity<Artist> getById(@PathVariable Long id) {
         return artistService.getArtistById(id)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -42,8 +41,8 @@ public class ArtistController {
     @PutMapping("/{id}")
     public ResponseEntity<Artist> update(@PathVariable Long id, @RequestBody Artist artist) {
         return artistService.updateArtist(id, artist)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -52,4 +51,3 @@ public class ArtistController {
         return ResponseEntity.ok().build();
     }
 }
-
