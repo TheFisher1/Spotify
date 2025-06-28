@@ -68,84 +68,84 @@ const Library: React.FC<LibraryProps> = ({
   };
   const renderGridView = () => {
     return <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {playlists.map(playlist => <div key={playlist.id} className="bg-zinc-900 p-4 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer" onClick={() => handlePlay(playlist)}>
-            <div className="mb-4">
-              <img src={playlist.cover} alt={playlist.title} className="w-full aspect-square object-cover rounded shadow-lg" />
-            </div>
-            <h3 className="font-bold truncate">{playlist.title}</h3>
-            <p className="text-sm text-zinc-400 mt-1 truncate">
-              By {playlist.owner} • {playlist.tracks} songs
-            </p>
-          </div>)}
-      </div>;
+      {playlists.map(playlist => <div key={playlist.id} className="bg-zinc-900 p-4 rounded-lg hover:bg-zinc-800 transition-colors cursor-pointer" onClick={() => handlePlay(playlist)}>
+        <div className="mb-4">
+          <img src={playlist.cover} alt={playlist.title} className="w-full aspect-square object-cover rounded shadow-lg" />
+        </div>
+        <h3 className="font-bold truncate">{playlist.title}</h3>
+        <p className="text-sm text-zinc-400 mt-1 truncate">
+          By {playlist.owner} • {playlist.tracks} songs
+        </p>
+      </div>)}
+    </div>;
   };
   const renderListView = () => {
     return <div className="bg-zinc-900 rounded-lg overflow-hidden">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-zinc-800">
-              <th className="py-3 px-4">#</th>
-              <th className="py-3 px-4">Title</th>
-              <th className="py-3 px-4">Owner</th>
-              <th className="py-3 px-4">Tracks</th>
-              <th className="py-3 px-4">Last played</th>
-            </tr>
-          </thead>
-          <tbody>
-            {playlists.map((playlist, index) => <tr key={playlist.id} className="border-b border-zinc-800 hover:bg-zinc-800 cursor-pointer" onClick={() => handlePlay(playlist)}>
-                <td className="py-3 px-4">{index + 1}</td>
-                <td className="py-3 px-4">
-                  <div className="flex items-center">
-                    <img src={playlist.cover} alt={playlist.title} className="w-10 h-10 mr-3 rounded" />
-                    {playlist.title}
-                  </div>
-                </td>
-                <td className="py-3 px-4 text-zinc-400">{playlist.owner}</td>
-                <td className="py-3 px-4 text-zinc-400">{playlist.tracks}</td>
-                <td className="py-3 px-4 text-zinc-400">
-                  {playlist.lastPlayed}
-                </td>
-              </tr>)}
-          </tbody>
-        </table>
-      </div>;
+      <table className="w-full text-left">
+        <thead>
+          <tr className="border-b border-zinc-800">
+            <th className="py-3 px-4">#</th>
+            <th className="py-3 px-4">Title</th>
+            <th className="py-3 px-4">Owner</th>
+            <th className="py-3 px-4">Tracks</th>
+            <th className="py-3 px-4">Last played</th>
+          </tr>
+        </thead>
+        <tbody>
+          {playlists.map((playlist, index) => <tr key={playlist.id} className="border-b border-zinc-800 hover:bg-zinc-800 cursor-pointer" onClick={() => handlePlay(playlist)}>
+            <td className="py-3 px-4">{index + 1}</td>
+            <td className="py-3 px-4">
+              <div className="flex items-center">
+                <img src={playlist.cover} alt={playlist.title} className="w-10 h-10 mr-3 rounded" />
+                {playlist.title}
+              </div>
+            </td>
+            <td className="py-3 px-4 text-zinc-400">{playlist.owner}</td>
+            <td className="py-3 px-4 text-zinc-400">{playlist.tracks}</td>
+            <td className="py-3 px-4 text-zinc-400">
+              {playlist.lastPlayed}
+            </td>
+          </tr>)}
+        </tbody>
+      </table>
+    </div>;
   };
   return <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Your Library</h1>
-        <div className="flex items-center space-x-4">
-          <div className="bg-zinc-800 rounded-full p-1 flex">
-            <button className={`rounded-full p-2 ${view === 'grid' ? 'bg-zinc-700' : ''}`} onClick={() => setView('grid')}>
-              <GridIcon className="h-5 w-5" />
-            </button>
-            <button className={`rounded-full p-2 ${view === 'list' ? 'bg-zinc-700' : ''}`} onClick={() => setView('list')}>
-              <ListFilterIcon className="h-5 w-5" />
-            </button>
-          </div>
-          <button className="flex items-center space-x-1 bg-zinc-800 rounded-full px-3 py-1">
-            <ListFilterIcon className="h-4 w-4" />
-            <span>Filters</span>
+    <div className="flex items-center justify-between mb-6">
+      <h1 className="text-3xl font-bold">Your Library</h1>
+      <div className="flex items-center space-x-4">
+        <div className="bg-zinc-800 rounded-full p-1 flex">
+          <button className={`rounded-full p-2 ${view === 'grid' ? 'bg-zinc-700' : ''}`} onClick={() => setView('grid')}>
+            <GridIcon className="h-5 w-5" />
+          </button>
+          <button className={`rounded-full p-2 ${view === 'list' ? 'bg-zinc-700' : ''}`} onClick={() => setView('list')}>
+            <ListFilterIcon className="h-5 w-5" />
           </button>
         </div>
+        <button className="flex items-center space-x-1 bg-zinc-800 rounded-full px-3 py-1">
+          <ListFilterIcon className="h-4 w-4" />
+          <span>Filters</span>
+        </button>
       </div>
-      <div className="mb-6">
-        <div className="flex space-x-2">
-          <button className={`rounded-full px-4 py-1 ${filter === 'playlists' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('playlists')}>
-            Playlists
-          </button>
-          <button className={`rounded-full px-4 py-1 ${filter === 'artists' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('artists')}>
-            Artists
-          </button>
-          <button className={`rounded-full px-4 py-1 ${filter === 'albums' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('albums')}>
-            Albums
-          </button>
-        </div>
+    </div>
+    <div className="mb-6">
+      <div className="flex space-x-2">
+        <button className={`rounded-full px-4 py-1 ${filter === 'playlists' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('playlists')}>
+          Playlists
+        </button>
+        <button className={`rounded-full px-4 py-1 ${filter === 'artists' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('artists')}>
+          Artists
+        </button>
+        <button className={`rounded-full px-4 py-1 ${filter === 'albums' ? 'bg-white text-black' : 'bg-zinc-800'}`} onClick={() => setFilter('albums')}>
+          Albums
+        </button>
       </div>
-      <div className="mb-4 flex items-center text-zinc-400">
-        <ClockIcon className="h-4 w-4 mr-2" />
-        <span>Recently played</span>
-      </div>
-      {view === 'grid' ? renderGridView() : renderListView()}
-    </div>;
+    </div>
+    <div className="mb-4 flex items-center text-zinc-400">
+      <ClockIcon className="h-4 w-4 mr-2" />
+      <span>Recently played</span>
+    </div>
+    {view === 'grid' ? renderGridView() : renderListView()}
+  </div>;
 };
 export default Library;

@@ -1,12 +1,8 @@
 package fmi.spotify.media.controller;
 
 import java.util.List;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +26,11 @@ public class SongController {
     private SongService songService;
 
     @GetMapping
-    public ResponseEntity<List<SongDto>> getAllSongs() {
-        return ResponseEntity.ok(songService.getAllSongsDto());
+    public ResponseEntity<List<SongDto>> getAllSongs(@RequestParam int pageSize, @RequestParam int pageNumber) {
+        List<SongDto> songs = songService.getAllSongsDto();
+
+        return ResponseEntity
+                .ok(songs.subList(pageNumber * pageSize, Math.min(pageNumber * pageSize + pageSize, songs.size())));
     }
 
     @GetMapping("/{songId}")
@@ -71,36 +70,5 @@ public class SongController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(songs);
-    }
-
-    @GetMapping("/audio/{songId}")
-    public ResponseEntity<Resource> getAudioFile(@PathVariable Long songId,
-            @RequestParam(required = false) Long userId) {
-        try {
-            // For audio file access, we'll use a default userId if not provided
-            Long defaultUserId = userId != null ? userId : 1L;
-
-            Song song = songService.getSongById(defaultUserId, songId)
-                    .orElseThrow(() -> new RuntimeException("Song not found"));
-
-            if (song.getFilePath() == null || song.getFilePath().isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            // Create a file resource from the file path
-            Path filePath = Paths.get(song.getFilePath());
-            Resource resource = new FileSystemResource(filePath.toFile());
-
-            if (!resource.exists()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok()
-                    .header("Content-Type", "audio/mpeg")
-                    .header("Content-Disposition", "inline; filename=\"" + filePath.getFileName() + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 }

@@ -37,3 +37,7 @@ spring:
           uri: http://localhost:8084
           predicates:
             - Path=/actions/**
+        - id: recommendation-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/recommendations/**

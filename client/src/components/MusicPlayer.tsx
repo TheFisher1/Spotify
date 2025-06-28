@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { PlayIcon, PauseIcon, SkipBackIcon, SkipForwardIcon, VolumeIcon, Repeat2Icon, ShuffleIcon } from 'lucide-react';
 
 interface Track {
@@ -8,8 +8,16 @@ interface Track {
   album: string;
   duration: string;
   cover: string;
+<<<<<<< Updated upstream
   audioUrl?: string;
   url?: string; // Azure Blob Storage URL for audio
+=======
+<<<<<<< Updated upstream
+=======
+  audioUrl?: string;
+  url?: string;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 }
 
 interface MusicPlayerProps {

@@ -2,9 +2,9 @@ import api from './api';
 import { Song, Album, Playlist } from '../types';
 
 export const mediaService = {
-    // Songs
-    async getAllSongs(): Promise<Song[]> {
-        const response = await api.get<Song[]>('/media/songs');
+
+    async getSongs({ pageSize, pageNumber }: { pageSize: number, pageNumber: number }): Promise<Song[]> {
+        const response = await api.get<Song[]>(`/media/songs?pageNumber=${pageNumber}&pageSize=${pageSize}`);
         return response.data;
     },
 
