@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +61,22 @@ public class RecommendationServiceImpl implements RecommendationService {
                     values).setCascadeCreate(true));
         } catch (ApiException e) {
             log.error("Recombee exception occurred when adding a new song", e);
+        }
+    }
+
+    // Overloaded method to handle Set<Genre> from the media service
+    public void addNewSong(Long songId, String title, String artist, String album, Set<?> genres) {
+        try {
+            // Convert Set<Genre> to comma-separated string of genre names
+            String genreString = genres.stream()
+                    .map(genre -> genre.toString())
+                    .collect(Collectors.joining(", "));
+
+            addNewSong(songId, title, artist, album, genreString);
+        } catch (Exception e) {
+            log.error("Error converting genres to string for recommendation service", e);
+            // Fallback to empty genre
+            addNewSong(songId, title, artist, album, "");
         }
     }
 

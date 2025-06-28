@@ -1,5 +1,6 @@
 package bg.spotify.actions.service.impl;
 
+import bg.spotify.actions.exceptions.SongNotFoundException;
 import bg.spotify.actions.model.Like;
 import bg.spotify.actions.repository.LikeRepository;
 import bg.spotify.actions.service.LikeService;
@@ -7,7 +8,6 @@ import bg.spotify.recommendations.service.RecommendationService;
 import bg.spotify.users.exceptions.UserNotFoundException;
 import bg.spotify.users.model.User;
 import bg.spotify.users.repository.UserRepository;
-import fmi.spotify.media.exceptions.SongNotFoundException;
 import fmi.spotify.media.model.Song;
 import fmi.spotify.media.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
