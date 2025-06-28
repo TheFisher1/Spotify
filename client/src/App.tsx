@@ -25,34 +25,30 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [currentTrack, setCurrentTrack] = useState({
-    id: '1',
-    title: 'Blinding Lights',
-    artist: 'The Weeknd',
-    album: 'After Hours',
-    duration: '3:20',
-    cover: 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-    audioUrl: ''
-  });
+  const [currentTrack, setCurrentTrack] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
 
-  // Handle play/pause
-  const handlePlayPause = () => {
+
+  const handlePlayPause = async () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
+      try {
+        if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        } else {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        }
+      } catch (error) {
+        console.error('Audio play/pause error:', error);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
-  // Handle track selection
-  const handleTrackSelect = (track: any) => {
+  const handleTrackSelect = async (track: any) => {
     setCurrentTrack(track);
     setIsPlaying(false);
     setCurrentTime(0);
@@ -101,6 +97,12 @@ const AppContent: React.FC = () => {
     setCurrentTime(0);
   };
 
+  // Handle audio error
+  const handleAudioError = (e: any) => {
+    console.error('Audio error:', e);
+    console.error('Audio error details:', audioRef.current?.error);
+  };
+
   if (!isAuthenticated) {
     return <LandingPage />;
   }
@@ -133,7 +135,9 @@ const AppContent: React.FC = () => {
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleEnded}
+        onError={handleAudioError}
         preload="metadata"
+        src='https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3'
       />
     </div>
   );

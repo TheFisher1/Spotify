@@ -1,17 +1,25 @@
-spring.application.name=
-spring.datasource.url=
-spring.datasource.username=
-spring.datasource.password=
-spring.datasource.driver-class-name=
+spring.application.name=users-service
+spring.datasource.url=jdbc:postgresql://localhost:5432/spotify
+spring.datasource.username=postgres
+spring.datasource.password=postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-server.port=
+server.port=8081
 
-spring.jpa.hibernate.ddl-auto=
-spring.jpa.show-sql=
-spring.jpa.properties.hibernate.format_sql=
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
 
-spring.datasource.hikari.maximum-pool-size=
-spring.datasource.hikari.minimum-idle=
-spring.datasource.hikari.idle-timeout=
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.idle-timeout=300000
+
+# JWT Configuration
+jwt.secret=your-secret-key-here-make-it-long-and-secure
+jwt.expiration=86400000
+
+# Database Seeding Configuration
+app.seed.database=true
+app.seed.force=false
 
 users.auth.api=

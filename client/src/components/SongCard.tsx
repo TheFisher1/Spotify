@@ -13,25 +13,24 @@ const SongCard: React.FC<SongCardProps> = ({
     setCurrentTrack,
     handlePlayPause
 }) => {
-    const handlePlay = () => {
+    const handlePlay = async () => {
         setCurrentTrack({
             id: song.id?.toString(),
             title: song.title,
             artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
             album: typeof song.album === 'string' ? song.album : song.album?.title || 'Unknown Album',
-            duration: typeof song.duration === 'string' ? song.duration : song.duration?.toString() || '0:00',
-            cover: song.thumbnail || song.cover || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-            audioUrl: ""
-
+            duration: song.duration || '0:00',
+            cover: song.thumbnail || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
+            audioUrl: song.url || ''
         });
-        handlePlayPause();
+        await handlePlayPause();
     };
 
     return (
         <div className="bg-zinc-900 p-4 rounded-lg hover:bg-zinc-800 transition-colors group relative">
             <div className="relative mb-4">
                 <img
-                    src={song.thumbnail || song.cover || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
+                    src={song.thumbnail || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
                     alt={song.title}
                     className="w-full aspect-square object-cover rounded shadow-lg"
                 />
@@ -47,7 +46,7 @@ const SongCard: React.FC<SongCardProps> = ({
                 {typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist'} • {typeof song.album === 'string' ? song.album : song.album?.title || 'Unknown Album'}
             </p>
             {song.duration && (
-                <p className="text-xs text-zinc-500 mt-1">{typeof song.duration === 'string' ? song.duration : song.duration?.toString() || '0:00'}</p>
+                <p className="text-xs text-zinc-500 mt-1">{song.duration}</p>
             )}
         </div>
     );

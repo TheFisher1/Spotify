@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 const api: AxiosInstance = axios.create({
     baseURL: 'http://localhost:8080',
-    timeout: 100,
+    timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -31,6 +31,7 @@ api.interceptors.response.use(
             localStorage.removeItem('user');
             window.location.href = '/login';
         }
+
         return Promise.reject(error);
     }
 );

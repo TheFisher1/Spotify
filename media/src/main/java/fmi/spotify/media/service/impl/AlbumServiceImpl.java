@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import bg.spotify.artist.repository.ArtistRepository;
 import fmi.spotify.media.model.Album;
 import fmi.spotify.media.model.AlbumDto;
 import fmi.spotify.media.repository.AlbumRepository;
@@ -12,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fmi.spotify.media.service.AlbumService;
-import fmi.spotify.media.service.BlobService;
 import jakarta.transaction.Transactional;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
     @Autowired
     private AlbumRepository albumRepository;
-    @Autowired
-    private BlobService blobService;
+
+    private static final String DEFAULT_ALBUM_IMAGE = "https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
 
     @Override
     public List<Album> getAllAlbums() {
@@ -124,26 +122,13 @@ public class AlbumServiceImpl implements AlbumService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Generate cover URL for an album based on album name and artist
-     */
     private String generateCoverUrl(Album album) {
         if (album.getName() != null && album.getArtist() != null) {
-            // Generate blob name based on album name and artist
-            String fileName = generateAlbumCoverName(album.getName(), album.getArtist().getName());
-            String imageUrl = blobService.getPublicUrl(fileName);
-            return imageUrl;
+            return "https://via.placeholder.com/300x300/1DB954/FFFFFF?text=" +
+                    album.getName().replace(" ", "+") + "+" +
+                    album.getArtist().getName().replace(" ", "+");
         } else {
-            // Return default image URL if no name or artist is provided
-            return blobService.getDefaultImageUrl("album");
+            return DEFAULT_ALBUM_IMAGE;
         }
-    }
-
-    /**
-     * Generate a blob name for album cover based on album name and artist
-     */
-    private String generateAlbumCoverName(String songName, String artistName) {
-        return "https://.blob.core.windows.net/songs/" + songName + "-" + artistName + ".jpg";
-
     }
 }

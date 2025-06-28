@@ -24,14 +24,11 @@ export interface AuthResponse {
 export interface Song {
     id?: number;
     title: string;
-    artist?: any;
-    album?: any;
-    duration?: any;
+    artist?: Artist;
+    album?: Album;
+    duration?: string;
     thumbnail?: string;
-    cover?: string;
-    audioUrl?: string;
     url?: string;
-    artistId?: number;
     genre?: string;
     filePath?: string;
 }

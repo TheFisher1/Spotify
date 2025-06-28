@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import bg.spotify.artist.model.Artist;
 import bg.spotify.artist.repository.ArtistRepository;
 import bg.spotify.recommendations.service.RecommendationService;
-import fmi.spotify.media.exceptions.InvalidSongException;
 import fmi.spotify.media.model.Album;
 import fmi.spotify.media.model.Song;
 import fmi.spotify.media.model.SongDto;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import fmi.spotify.media.repository.SongRepository;
 import fmi.spotify.media.service.SongService;
-import fmi.spotify.media.service.MediaBlobService;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -29,8 +27,9 @@ public class SongServiceImpl implements SongService {
     private ArtistRepository artistRepository;
     @Autowired
     private AlbumRepository albumRepository;
-    @Autowired
-    private MediaBlobService mediaBlobService;
+
+    private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";
+    private static final String DEFAULT_AUDIO_URL = "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3";
 
     @Override
     public List<Song> getAllSongs() {
@@ -42,8 +41,8 @@ public class SongServiceImpl implements SongService {
         List<Song> songs = songRepository.findAll();
         return songs.stream()
                 .map(song -> {
-                    String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(song);
-                    String audioUrl = mediaBlobService.generateSongAudioUrl(song);
+                    String thumbnailUrl = generateSongThumbnailUrl(song);
+                    String audioUrl = generateSongAudioUrl(song);
                     return SongDto.fromSong(song, thumbnailUrl, audioUrl);
                 })
                 .collect(Collectors.toList());
@@ -59,8 +58,8 @@ public class SongServiceImpl implements SongService {
     public Optional<SongDto> getSongDtoById(Long userId, Long songId) {
         Optional<Song> songOpt = getSongById(userId, songId);
         return songOpt.map(song -> {
-            String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(song);
-            String audioUrl = mediaBlobService.generateSongAudioUrl(song);
+            String thumbnailUrl = generateSongThumbnailUrl(song);
+            String audioUrl = generateSongAudioUrl(song);
             return SongDto.fromSong(song, thumbnailUrl, audioUrl);
         });
     }
@@ -80,8 +79,8 @@ public class SongServiceImpl implements SongService {
     @Override
     public SongDto createSongDto(Song song) {
         Song saved = createSong(song);
-        String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(saved);
-        String audioUrl = mediaBlobService.generateSongAudioUrl(saved);
+        String thumbnailUrl = generateSongThumbnailUrl(saved);
+        String audioUrl = generateSongAudioUrl(saved);
         return SongDto.fromSong(saved, thumbnailUrl, audioUrl);
     }
 
@@ -99,8 +98,8 @@ public class SongServiceImpl implements SongService {
     public Optional<SongDto> updateSongDto(Long id, Song song) {
         Optional<Song> updatedSong = updateSong(id, song);
         return updatedSong.map(savedSong -> {
-            String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(savedSong);
-            String audioUrl = mediaBlobService.generateSongAudioUrl(savedSong);
+            String thumbnailUrl = generateSongThumbnailUrl(savedSong);
+            String audioUrl = generateSongAudioUrl(savedSong);
             return SongDto.fromSong(savedSong, thumbnailUrl, audioUrl);
         });
     }
@@ -121,8 +120,8 @@ public class SongServiceImpl implements SongService {
         List<Song> songs = searchSongs(query);
         return songs.stream()
                 .map(song -> {
-                    String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(song);
-                    String audioUrl = mediaBlobService.generateSongAudioUrl(song);
+                    String thumbnailUrl = generateSongThumbnailUrl(song);
+                    String audioUrl = generateSongAudioUrl(song);
                     return SongDto.fromSong(song, thumbnailUrl, audioUrl);
                 })
                 .collect(Collectors.toList());
@@ -138,10 +137,18 @@ public class SongServiceImpl implements SongService {
         List<Song> songs = getSongsByArtistId(artistId);
         return songs.stream()
                 .map(song -> {
-                    String thumbnailUrl = mediaBlobService.generateSongThumbnailUrl(song);
-                    String audioUrl = mediaBlobService.generateSongAudioUrl(song);
+                    String thumbnailUrl = generateSongThumbnailUrl(song);
+                    String audioUrl = generateSongAudioUrl(song);
                     return SongDto.fromSong(song, thumbnailUrl, audioUrl);
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String generateSongThumbnailUrl(Song song) {
+        return DEFAULT_SONG_IMAGE;
+    }
+
+    private String generateSongAudioUrl(Song song) {
+        return DEFAULT_AUDIO_URL;
     }
 }
