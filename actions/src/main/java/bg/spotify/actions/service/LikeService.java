@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface LikeService {
     void likeSong(Long userId, Long songId);
+
     void unlikeSong(Long userId, Long songId);
+
     List<Song> getLikedSongs(Long userId);
-    int countBySong_Id(Long songId);
+
+    int countBySongId(Long songId);
 }

@@ -35,5 +35,4 @@ public class Like {
     @JoinColumn(name = "song_id")
     private Song song;
 
-
 }

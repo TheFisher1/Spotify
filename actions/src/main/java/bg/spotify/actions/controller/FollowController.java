@@ -19,7 +19,6 @@ public class FollowController {
     @Autowired
     private FollowService followService;
 
-
     @PostMapping("/user/{userId}/artist/{artistId}")
     public ResponseEntity<Void> followArtist(@PathVariable Long userId, @PathVariable Long artistId) {
         followService.followArtist(userId, artistId);

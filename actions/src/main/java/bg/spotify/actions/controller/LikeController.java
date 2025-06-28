@@ -42,7 +42,7 @@ public class LikeController {
 
     @GetMapping("/count/song/{songId}")
     public ResponseEntity<Integer> countBySong(@PathVariable Long songId) {
-        int count = likeService.countBySong_Id(songId);
+        int count = likeService.countBySongId(songId);
         return ResponseEntity.ok(count);
     }
 
