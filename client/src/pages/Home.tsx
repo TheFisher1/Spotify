@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import SongCard from '../components/SongCard';
 import { mediaService } from '../services/mediaService';
 import { Song } from '../types';
+import { SongCollection } from '../components/SongCollection';
 
 interface HomeProps {
   setCurrentTrack: (track: any) => void;
@@ -35,7 +35,7 @@ const Home: React.FC<HomeProps> = ({
     };
 
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   if (loading) {
     return (
@@ -65,16 +65,7 @@ const Home: React.FC<HomeProps> = ({
           </button>
         </div>
         {songs.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {songs.map(song => (
-              <SongCard
-                key={song.id}
-                song={song}
-                setCurrentTrack={setCurrentTrack}
-                handlePlayPause={handlePlayPause}
-              />
-            ))}
-          </div>
+          <SongCollection songs={songs} setCurrentTrack={setCurrentTrack} onNextPage={() => setCurrentPage(x => x + 1)} onPreviousPage={() => setCurrentPage(x => x - 1)} handlePlayPause={handlePlayPause} />
         ) : (
           <div className="text-zinc-400 text-center py-8">No songs available</div>
         )}

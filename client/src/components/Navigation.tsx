@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { LoginForm, RegistrationForm } from '../types';
+import Button from './Button';
 
 export function Navigation() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -70,24 +71,23 @@ export function Navigation() {
           <div className="flex justify-between items-center py-4">
             <h1 className="text-2xl font-bold">Spotify</h1>
             <div className="space-x-4">
-              <button
-                className="px-4 py-2 rounded-full hover:text-green-500 transition-colors"
+              <Button
+                variant="ghost"
                 onClick={openLoginModal}
               >
                 Log in
-              </button>
-              <button
-                className="px-4 py-2 rounded-full bg-green-500 hover:bg-green-400 transition-colors"
+              </Button>
+              <Button
+                variant="primary"
                 onClick={openRegisterModal}
               >
                 Sign up
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Login/Register Modal */}
       {(showLoginModal || showRegisterModal) && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-zinc-900 p-8 rounded-lg w-full max-w-md">
@@ -141,25 +141,28 @@ export function Navigation() {
               </div>
 
               <div className="flex space-x-4">
-                <button
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-green-500 hover:bg-green-400 text-white py-3 rounded font-medium transition-colors disabled:opacity-50"
+                  variant="primary"
+                  loading={loading}
+                  className="flex-1"
                 >
-                  {loading ? 'Loading...' : (isLogin ? 'Log In' : 'Sign Up')}
-                </button>
-                <button
+                  {isLogin ? 'Log In' : 'Sign Up'}
+                </Button>
+                <Button
                   type="button"
+                  variant="secondary"
                   onClick={closeModal}
-                  className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-3 rounded font-medium transition-colors"
+                  className="flex-1"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </form>
 
             <div className="mt-4 text-center">
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => {
                   setIsLogin(!isLogin);
                   setError('');
@@ -167,7 +170,7 @@ export function Navigation() {
                 className="text-green-500 hover:text-green-400"
               >
                 {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

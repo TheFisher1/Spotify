@@ -39,8 +39,5 @@ public class Playlist {
     private Set<Song> songs = new HashSet<>();
 
     @Column
-    private String coverImagePath;
-
-    @Column
     private boolean isPublic = false;
 }

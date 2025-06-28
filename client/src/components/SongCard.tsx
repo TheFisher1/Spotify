@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlayIcon } from 'lucide-react';
 import { Song } from '../types';
 
@@ -8,12 +7,13 @@ interface SongCardProps {
     handlePlayPause: () => void;
 }
 
-const SongCard: React.FC<SongCardProps> = ({
+const SongCard = ({
     song,
     setCurrentTrack,
     handlePlayPause
-}) => {
-    const handlePlay = async () => {
+}: SongCardProps) => {
+
+    const handlePlay = () => {
         setCurrentTrack({
             id: song.id?.toString(),
             title: song.title,
@@ -23,7 +23,7 @@ const SongCard: React.FC<SongCardProps> = ({
             cover: song.thumbnail || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
             audioUrl: song.url || ''
         });
-        await handlePlayPause();
+        handlePlayPause();
     };
 
     return (

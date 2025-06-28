@@ -8,7 +8,6 @@ interface ArtistProps {
   handlePlayPause: () => void;
 }
 const ArtistCard = ({
-  id,
   name,
   image,
   type,

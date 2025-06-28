@@ -2,7 +2,6 @@ import React from 'react';
 import { Features } from '../components/Features';
 import { Navigation } from '../components/Navigation';
 import { Heroes } from '../components/Heroes';
-import { PremiumSection } from '../components/PremiumSection';
 import { Footer } from '../components/Footer';
 
 const LandingPage: React.FC = () => {
@@ -11,7 +10,6 @@ const LandingPage: React.FC = () => {
       <Navigation />
       <Heroes onLogin={() => { }} />
       <Features />
-      <PremiumSection onLogin={() => { }} />
       <Footer />
     </div>
   )
