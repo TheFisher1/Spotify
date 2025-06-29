@@ -45,10 +45,6 @@ const Home: React.FC<HomeProps> = ({
   onLoadMoreSongs,
   onLoadMorePlaylists
 }) => {
-  // Ensure songs and playlists are always arrays to prevent undefined errors
-  const safeSongs = songs || [];
-  const safePlaylists = playlists || [];
-
   if (loading.songs || loading.playlists) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -84,9 +80,9 @@ const Home: React.FC<HomeProps> = ({
             </button>
           )}
         </div>
-        {safeSongs.length > 0 ? (
+        {songs.length > 0 ? (
           <SongCollection
-            songs={safeSongs}
+            songs={songs}
             setCurrentTrack={setCurrentTrack}
             handlePlayPause={handlePlayPause}
           />
@@ -108,9 +104,9 @@ const Home: React.FC<HomeProps> = ({
             </button>
           )}
         </div>
-        {safePlaylists.length > 0 ? (
+        {playlists.length > 0 ? (
           <PlaylistCollection
-            playlists={safePlaylists}
+            playlists={playlists}
             setCurrentTrack={setCurrentTrack}
             handlePlayPause={handlePlayPause}
             onPlaylistSelect={onPlaylistSelect}

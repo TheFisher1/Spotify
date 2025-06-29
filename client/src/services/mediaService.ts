@@ -75,8 +75,16 @@ export const mediaService = {
         return response.data;
     },
 
-    async getUserPlaylists(userId: number, page: number = 0, size: number = 10): Promise<Playlist[]> {
-        const response = await api.get<Playlist[]>(`/media/playlists/user/${userId}?page=${page}&size=${size}`);
+    async getUserPlaylists(userId: number, page: number = 0, size: number = 10): Promise<{
+        content: Playlist[];
+        totalElements: number;
+        totalPages: number;
+        currentPage: number;
+        size: number;
+        hasNext: boolean;
+        hasPrevious: boolean;
+    }> {
+        const response = await api.get(`/media/playlists/user/${userId}?page=${page}&size=${size}`);
         return response.data;
     },
 
