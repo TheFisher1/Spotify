@@ -6,7 +6,7 @@ import { Sidebar } from './components/Sidebar';
 import { MusicPlayer } from './components/MusicPlayer';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
-import { Track, Playlist, Song, formatDuration } from './types';
+import { Track, Playlist, formatDuration } from './types';
 
 export function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -16,15 +16,10 @@ export function AppContent() {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [allSongs, setAllSongs] = useState<Song[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
-
-  React.useEffect(() => {
-    setAllSongs(songs);
-  }, [songs]);
 
   const playTrack = async (track: Track) => {
     if (!audioRef.current) return;
@@ -64,9 +59,9 @@ export function AppContent() {
   };
 
   const playSongFromAllSongs = async (songIndex: number) => {
-    if (songIndex < 0 || songIndex >= allSongs.length) return;
+    if (songIndex < 0 || songIndex >= songs.length) return;
 
-    const song = allSongs[songIndex];
+    const song = songs[songIndex];
     const track: Track = {
       id: song.id?.toString() || '1',
       title: song.title,
@@ -168,9 +163,9 @@ export function AppContent() {
       if (nextIndex < currentPlaylist.songs.length) {
         playSongFromPlaylist(currentPlaylist, nextIndex);
       }
-    } else if (allSongs.length > 0) {
+    } else if (songs.length > 0) {
       const nextIndex = currentSongIndex + 1;
-      if (nextIndex < allSongs.length) {
+      if (nextIndex < songs.length) {
         playSongFromAllSongs(nextIndex);
       }
     }
@@ -182,7 +177,7 @@ export function AppContent() {
       if (prevIndex >= 0) {
         playSongFromPlaylist(currentPlaylist, prevIndex);
       }
-    } else if (allSongs.length > 0) {
+    } else if (songs.length > 0) {
       const prevIndex = currentSongIndex - 1;
       if (prevIndex >= 0) {
         playSongFromAllSongs(prevIndex);
