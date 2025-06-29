@@ -4,7 +4,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider, useData } from './contexts/DataContext';
 import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
-import Search from './pages/Search';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import { Track, Playlist, Song, formatDuration } from './types';
@@ -25,7 +24,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 export function AppContent() {
   const { isAuthenticated } = useAuth();
-  const { songs, playlists, searchResults, loading, error, pagination, performSearch, loadMoreSongs, loadMorePlaylists } = useData();
+  const { songs, playlists, loading, error, pagination, loadMoreSongs, loadMorePlaylists } = useData();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
@@ -233,19 +232,6 @@ export function AppContent() {
                 />
               }
             />
-            <Route
-              path="/search"
-              element={
-                <Search
-                  searchResults={searchResults}
-                  loading={loading.search}
-                  error={error.search}
-                  onSearch={performSearch}
-                  setCurrentTrack={handleTrackSelect}
-                  handlePlayPause={togglePlayPause}
-                />
-              }
-            />
             <Route path="/" element={<Navigate to="/home" replace />} />
           </Routes>
         </main>
@@ -281,7 +267,9 @@ export function App() {
     <Router>
       <AuthProvider>
         <DataProvider>
-          <AppContent />
+          <ProtectedRoute>
+            <AppContent />
+          </ProtectedRoute>
         </DataProvider>
       </AuthProvider>
     </Router>
