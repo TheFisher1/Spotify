@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HomeIcon, SearchIcon, LibraryIcon, PlusSquareIcon, HeartIcon } from 'lucide-react';
+import { HomeIcon, SearchIcon, PlusSquareIcon, HeartIcon } from 'lucide-react';
 import Button from "./Button";
 
 const Sidebar: React.FC = () => {
@@ -11,7 +11,6 @@ const Sidebar: React.FC = () => {
     const path = location.pathname;
     if (path === '/home' || path === '/') return 'home';
     if (path === '/search') return 'search';
-    if (path === '/library') return 'library';
     return 'home';
   };
 
@@ -47,16 +46,6 @@ const Sidebar: React.FC = () => {
               icon={SearchIcon}
             >
               Search
-            </Button>
-          </li>
-          <li>
-            <Button
-              variant="sidebar"
-              className={currentPage === 'library' ? 'bg-zinc-800 font-semibold' : ''}
-              onClick={() => handleNavigation('library')}
-              icon={LibraryIcon}
-            >
-              Your Library
             </Button>
           </li>
         </ul>

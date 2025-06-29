@@ -1,15 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SearchIcon } from 'lucide-react';
 import PlaylistCard from '../components/PlaylistCard';
 import AlbumCard from '../components/AlbumCard';
 import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCard';
-import { mediaService } from '../services/mediaService';
-import { artistService } from '../services/artistService';
 import { Song, Artist, Album, Playlist } from '../types';
-import { useAuth } from '../contexts/AuthContext';
 
 interface SearchProps {
+  searchResults: {
+    songs: Song[];
+    albums: Album[];
+    playlists: Playlist[];
+    artists: Artist[];
+  };
+  loading: boolean;
+  error: string;
+  onSearch: (query: string) => void;
   setCurrentTrack: (track: any) => void;
   handlePlayPause: () => void;
 }
@@ -28,13 +34,14 @@ interface SearchResult {
 }
 
 const Search = ({
+  searchResults,
+  loading,
+  error,
+  onSearch,
   setCurrentTrack,
   handlePlayPause
 }: SearchProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const genres = [
     { id: '1', name: 'Pop', color: 'bg-purple-600' },
@@ -51,83 +58,10 @@ const Search = ({
     { id: '12', name: 'Punk', color: 'bg-amber-600' }
   ];
 
-  useEffect(() => {
-    const searchTimeout = setTimeout(() => {
-      if (searchQuery.trim()) {
-        performSearch();
-      } else {
-        setSearchResults([]);
-      }
-    }, 500);
-
-    return () => clearTimeout(searchTimeout);
-  }, [searchQuery]);
-
-  const { user } = useAuth();
-
-  const performSearch = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
-      const [songs, albums, playlists, artists] = await Promise.all([
-        mediaService.getSongs({ pageSize: 50, pageNumber: 0 }),
-        mediaService.getAllAlbums(),
-        mediaService.getUserPlaylists(user?.id!),
-        artistService.getAllArtists()
-      ]);
-
-      const results: SearchResult[] = [];
-
-      songs.forEach((song: Song) => {
-        results.push({
-          type: 'song',
-          id: song.id?.toString() || '',
-          title: song.title,
-          artist: song.artist,
-          cover: song.thumbnail || song.thumbnail,
-          song: song
-        });
-      });
-
-      albums.forEach((album: Album) => {
-        results.push({
-          type: 'album',
-          id: album.id?.toString() || '',
-          title: album.name,
-          artist: album.artist,
-          cover: album.cover,
-          year: album.releaseDate?.split('-')[0]
-        });
-      });
-
-      playlists.forEach((playlist: Playlist) => {
-        results.push({
-          type: 'playlist',
-          id: playlist.id?.toString() || '',
-          title: playlist.name,
-          description: playlist.description,
-          cover: playlist.coverUrl
-        });
-      });
-
-      // Add artists
-      artists.forEach((artist: Artist) => {
-        results.push({
-          type: 'artist',
-          id: artist.id?.toString() || '',
-          name: artist.name,
-          image: artist.image
-        });
-      });
-
-      setSearchResults(results);
-    } catch (err: any) {
-      setError('Search failed');
-      console.error('Search error:', err);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    onSearch(query);
   };
 
   const renderSearchResults = () => {
@@ -151,14 +85,46 @@ const Search = ({
       );
     }
 
+    const allResults = [
+      ...searchResults.songs.map(song => ({
+        type: 'song' as const,
+        id: song.id?.toString() || '',
+        title: song.title,
+        artist: song.artist,
+        cover: song.thumbnail || song.thumbnail,
+        song: song
+      })),
+      ...searchResults.albums.map(album => ({
+        type: 'album' as const,
+        id: album.id?.toString() || '',
+        title: album.name,
+        artist: album.artist,
+        cover: album.cover,
+        year: album.releaseDate?.split('-')[0]
+      })),
+      ...searchResults.playlists.map(playlist => ({
+        type: 'playlist' as const,
+        id: playlist.id?.toString() || '',
+        title: playlist.name,
+        description: playlist.description,
+        cover: playlist.coverUrl
+      })),
+      ...searchResults.artists.map(artist => ({
+        type: 'artist' as const,
+        id: artist.id?.toString() || '',
+        name: artist.name,
+        image: artist.image
+      }))
+    ];
+
     return (
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">
           Search Results for "{searchQuery}"
         </h2>
-        {searchResults.length > 0 ? (
+        {allResults.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {searchResults.map(item => {
+            {allResults.map(item => {
               if (item.type === 'song' && item.song) {
                 return (
                   <SongCard
@@ -198,16 +164,16 @@ const Search = ({
                   <PlaylistCard
                     id={item.id}
                     key={item.id}
-                    playlist={{
-                      id: item.id,
-                      name: item.title || '',
-                      description: item.description || '',
-                      coverUrl: item.cover
-                    }}
                     title={item.title || ''}
                     description={item.description || ''}
                     setCurrentTrack={setCurrentTrack}
                     handlePlayPause={handlePlayPause}
+                    playlist={{
+                      id: item.id,
+                      name: item.title || '',
+                      description: item.description,
+                      coverUrl: item.cover
+                    }}
                   />
                 );
               }
@@ -225,34 +191,34 @@ const Search = ({
     <div>
       <div className="mb-8">
         <div className="relative">
-          <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-zinc-400" />
+          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 h-5 w-5" />
           <input
             type="text"
             placeholder="What do you want to listen to?"
-            className="w-full bg-zinc-800 rounded-full py-3 pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-white"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
+            className="w-full bg-zinc-800 text-white placeholder-zinc-400 rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
       </div>
 
-      {renderSearchResults()}
-
       {!searchQuery && (
         <div>
-          <h2 className="text-2xl font-bold mb-4">Browse All</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <h2 className="text-2xl font-bold mb-6">Browse All</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {genres.map(genre => (
               <div
                 key={genre.id}
-                className={`${genre.color} rounded-lg h-40 flex items-center justify-center p-4 hover:brightness-110 cursor-pointer`}
+                className={`${genre.color} p-6 rounded-lg cursor-pointer hover:scale-105 transition-transform`}
               >
-                <h3 className="text-xl font-bold">{genre.name}</h3>
+                <h3 className="font-bold text-lg">{genre.name}</h3>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {renderSearchResults()}
     </div>
   );
 };

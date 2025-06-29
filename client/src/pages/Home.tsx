@@ -1,62 +1,55 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { mediaService } from '../services/mediaService';
+import React from 'react';
 import { Playlist, Song } from '../types';
 import { PlaylistCollection } from '../components/PlaylistCollection';
 import { SongCollection } from '../components/SongCollection';
-import { useAuth } from '../contexts/AuthContext';
 
 interface HomeProps {
+  songs: Song[];
+  playlists: Playlist[];
+  loading: {
+    songs: boolean;
+    playlists: boolean;
+    albums: boolean;
+    artists: boolean;
+    search: boolean;
+    loadMoreSongs: boolean;
+    loadMorePlaylists: boolean;
+  };
+  error: {
+    songs: string;
+    playlists: string;
+    albums: string;
+    artists: string;
+    search: string;
+  };
+  pagination: {
+    songs: { pageNumber: number; pageSize: number; hasMore: boolean };
+    playlists: { pageNumber: number; pageSize: number; hasMore: boolean };
+  };
   setCurrentTrack: (track: any) => void;
   handlePlayPause: () => void;
   onPlaylistSelect?: (playlist: Playlist) => void;
-  onSongsLoaded?: (songs: Song[]) => void;
+  onLoadMoreSongs: () => void;
+  onLoadMorePlaylists: () => void;
 }
 
 const Home: React.FC<HomeProps> = ({
+  songs,
+  playlists,
+  loading,
+  error,
+  pagination,
   setCurrentTrack,
   handlePlayPause,
   onPlaylistSelect,
-  onSongsLoaded
+  onLoadMoreSongs,
+  onLoadMorePlaylists
 }) => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  // Ensure songs and playlists are always arrays to prevent undefined errors
+  const safeSongs = songs || [];
+  const safePlaylists = playlists || [];
 
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const { user } = useAuth();
-
-  const onSongsLoadedRef = useRef(onSongsLoaded);
-  onSongsLoadedRef.current = onSongsLoaded;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const [playlistsData, songsData] = await Promise.all([
-          user?.id ? mediaService.getUserPlaylists(user.id) : mediaService.getAllPlaylists(),
-          mediaService.getSongs({ pageSize: 10, pageNumber: 0 })
-        ]);
-
-        setPlaylists(playlistsData);
-        setSongs(songsData);
-
-        // Notify parent component about loaded songs
-        if (onSongsLoadedRef.current) {
-          onSongsLoadedRef.current(songsData);
-        }
-      } catch (err: any) {
-        setError('Failed to load content');
-        console.error('Error fetching data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [user?.id]);
-
-  if (loading) {
+  if (loading.songs || loading.playlists) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-xl">Loading...</div>
@@ -64,10 +57,12 @@ const Home: React.FC<HomeProps> = ({
     );
   }
 
-  if (error) {
+  if (error.songs || error.playlists) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-red-500 text-xl">{error}</div>
+        <div className="text-red-500 text-xl">
+          {error.songs || error.playlists}
+        </div>
       </div>
     );
   }
@@ -79,16 +74,20 @@ const Home: React.FC<HomeProps> = ({
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">All Songs</h2>
-          <button className="text-sm text-zinc-400 hover:text-white">
-            See all
-          </button>
+          {pagination.songs.hasMore && (
+            <button
+              className="text-sm text-zinc-400 hover:text-white disabled:opacity-50"
+              onClick={onLoadMoreSongs}
+              disabled={loading.loadMoreSongs}
+            >
+              {loading.loadMoreSongs ? 'Loading...' : 'See more'}
+            </button>
+          )}
         </div>
-        {songs.length > 0 ? (
+        {safeSongs.length > 0 ? (
           <SongCollection
-            songs={songs}
+            songs={safeSongs}
             setCurrentTrack={setCurrentTrack}
-            onNextPage={() => { }}
-            onPreviousPage={() => { }}
             handlePlayPause={handlePlayPause}
           />
         ) : (
@@ -99,13 +98,19 @@ const Home: React.FC<HomeProps> = ({
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Your Playlists</h2>
-          <button className="text-sm text-zinc-400 hover:text-white">
-            See all
-          </button>
+          {pagination.playlists.hasMore && (
+            <button
+              className="text-sm text-zinc-400 hover:text-white disabled:opacity-50"
+              onClick={onLoadMorePlaylists}
+              disabled={loading.loadMorePlaylists}
+            >
+              {loading.loadMorePlaylists ? 'Loading...' : 'See more'}
+            </button>
+          )}
         </div>
-        {playlists.length > 0 ? (
+        {safePlaylists.length > 0 ? (
           <PlaylistCollection
-            playlists={playlists}
+            playlists={safePlaylists}
             setCurrentTrack={setCurrentTrack}
             handlePlayPause={handlePlayPause}
             onPlaylistSelect={onPlaylistSelect}

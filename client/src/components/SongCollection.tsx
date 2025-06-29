@@ -5,8 +5,6 @@ interface SongCollectionProps {
     songs: Song[];
     setCurrentTrack: (track: any) => void;
     handlePlayPause: () => void;
-    onNextPage: () => void;
-    onPreviousPage: () => void;
 }
 
 export function SongCollection({ songs, setCurrentTrack, handlePlayPause }: SongCollectionProps) {
@@ -23,6 +21,5 @@ export function SongCollection({ songs, setCurrentTrack, handlePlayPause }: Song
                 ))}
             </div>
         </div>
-
     );
 }

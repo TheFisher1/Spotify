@@ -56,11 +56,6 @@ export const mediaService = {
         await api.delete(`/media/albums/${id}`);
     },
 
-    async getAllPlaylists(): Promise<Playlist[]> {
-        const response = await api.get<Playlist[]>('/media/playlists');
-        return response.data;
-    },
-
     async getPlaylistById(id: string): Promise<Playlist> {
         const response = await api.get<Playlist>(`/media/playlists/${id}`);
         return response.data;
@@ -80,8 +75,8 @@ export const mediaService = {
         return response.data;
     },
 
-    async getUserPlaylists(userId: number): Promise<Playlist[]> {
-        const response = await api.get<Playlist[]>(`/media/playlists/user/${userId}`);
+    async getUserPlaylists(userId: number, page: number = 0, size: number = 10): Promise<Playlist[]> {
+        const response = await api.get<Playlist[]>(`/media/playlists/user/${userId}?page=${page}&size=${size}`);
         return response.data;
     },
 

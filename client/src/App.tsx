@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { DataProvider, useData } from './contexts/DataContext';
 import Sidebar from './components/Sidebar';
 import MusicPlayer from './components/MusicPlayer';
 import Search from './pages/Search';
-import Library from './pages/Library';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import { Track, Playlist, Song, formatDuration } from './types';
@@ -25,6 +25,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 export function AppContent() {
   const { isAuthenticated } = useAuth();
+  const { songs, playlists, searchResults, loading, error, pagination, performSearch, loadMoreSongs, loadMorePlaylists } = useData();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
@@ -35,6 +36,11 @@ export function AppContent() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
+
+  // Update allSongs when songs change
+  React.useEffect(() => {
+    setAllSongs(songs);
+  }, [songs]);
 
   const playTrack = async (track: Track) => {
     if (!audioRef.current) return;
@@ -150,7 +156,6 @@ export function AppContent() {
     setIsPlaying(false);
     setCurrentTime(0);
 
-    // Auto-play next song if we're in a playlist
     if (currentPlaylist && currentPlaylist.songs) {
       const nextIndex = currentSongIndex + 1;
       if (nextIndex < currentPlaylist.songs.length) {
@@ -164,30 +169,22 @@ export function AppContent() {
   };
 
   const handleTrackSelect = (track: Track) => {
-    // Clear playlist state when playing individual track
     setCurrentPlaylist(null);
     setCurrentSongIndex(0);
     playTrack(track);
   };
 
   const handlePlaylistSelect = (playlist: Playlist) => {
-    // Start playing from the first song of the playlist
     playSongFromPlaylist(playlist, 0);
-  };
-
-  const handleSongsLoaded = (songs: Song[]) => {
-    setAllSongs(songs);
   };
 
   const onNextTrack = () => {
     if (currentPlaylist && currentPlaylist.songs) {
-      // Next song in playlist
       const nextIndex = currentSongIndex + 1;
       if (nextIndex < currentPlaylist.songs.length) {
         playSongFromPlaylist(currentPlaylist, nextIndex);
       }
     } else if (allSongs.length > 0) {
-      // Next song in all songs
       const nextIndex = currentSongIndex + 1;
       if (nextIndex < allSongs.length) {
         playSongFromAllSongs(nextIndex);
@@ -197,13 +194,11 @@ export function AppContent() {
 
   const onPreviousTrack = () => {
     if (currentPlaylist && currentPlaylist.songs) {
-      // Previous song in playlist
       const prevIndex = currentSongIndex - 1;
       if (prevIndex >= 0) {
         playSongFromPlaylist(currentPlaylist, prevIndex);
       }
     } else if (allSongs.length > 0) {
-      // Previous song in all songs
       const prevIndex = currentSongIndex - 1;
       if (prevIndex >= 0) {
         playSongFromAllSongs(prevIndex);
@@ -225,10 +220,16 @@ export function AppContent() {
               path="/home"
               element={
                 <Home
+                  songs={songs}
+                  playlists={playlists}
+                  loading={loading}
+                  error={error}
+                  pagination={pagination}
                   setCurrentTrack={handleTrackSelect}
                   handlePlayPause={togglePlayPause}
                   onPlaylistSelect={handlePlaylistSelect}
-                  onSongsLoaded={handleSongsLoaded}
+                  onLoadMoreSongs={loadMoreSongs}
+                  onLoadMorePlaylists={loadMorePlaylists}
                 />
               }
             />
@@ -236,15 +237,10 @@ export function AppContent() {
               path="/search"
               element={
                 <Search
-                  setCurrentTrack={handleTrackSelect}
-                  handlePlayPause={togglePlayPause}
-                />
-              }
-            />
-            <Route
-              path="/library"
-              element={
-                <Library
+                  searchResults={searchResults}
+                  loading={loading.search}
+                  error={error.search}
+                  onSearch={performSearch}
                   setCurrentTrack={handleTrackSelect}
                   handlePlayPause={togglePlayPause}
                 />
@@ -284,7 +280,9 @@ export function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppContent />
+        <DataProvider>
+          <AppContent />
+        </DataProvider>
       </AuthProvider>
     </Router>
   );
