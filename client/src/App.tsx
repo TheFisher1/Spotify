@@ -8,20 +8,6 @@ import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import { Track, Playlist, Song, formatDuration } from './types';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-black">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
-  }
-
-  return isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
-};
-
 export function AppContent() {
   const { isAuthenticated } = useAuth();
   const { songs, playlists, loading, error, pagination, loadMoreSongs, loadMorePlaylists } = useData();
