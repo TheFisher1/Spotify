@@ -53,7 +53,6 @@ const Button: React.FC<ButtonProps> = ({
         inactive: 'hover:bg-zinc-800'
     };
 
-    // Handle special cases for filter and sidebar variants
     let finalClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]}`;
 
     if (variant === 'filter') {
