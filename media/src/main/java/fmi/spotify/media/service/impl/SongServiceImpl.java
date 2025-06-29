@@ -8,6 +8,8 @@ import bg.spotify.recommendations.service.RecommendationService;
 import fmi.spotify.media.model.Song;
 import fmi.spotify.media.model.SongDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fmi.spotify.media.repository.SongRepository;
@@ -20,24 +22,10 @@ public class SongServiceImpl implements SongService {
     @Autowired
     private RecommendationService recommendationService;
 
-    private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";
-    private static final String DEFAULT_AUDIO_URL = "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3";
-
     @Override
-    public List<Song> getAllSongs() {
-        return songRepository.findAll();
-    }
-
-    @Override
-    public List<SongDto> getAllSongsDto() {
-        List<Song> songs = songRepository.findAll();
-        return songs.stream()
-                .map(song -> {
-                    String thumbnailUrl = generateSongThumbnailUrl(song);
-                    String audioUrl = generateSongAudioUrl(song);
-                    return SongDto.fromSong(song, thumbnailUrl, audioUrl);
-                })
-                .collect(Collectors.toList());
+    public List<Song> getAllSongs(int pageSize, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return songRepository.findAll(pageable).getContent();
     }
 
     @Override
@@ -50,9 +38,7 @@ public class SongServiceImpl implements SongService {
     public Optional<SongDto> getSongDtoById(Long userId, Long songId) {
         Optional<Song> songOpt = getSongById(userId, songId);
         return songOpt.map(song -> {
-            String thumbnailUrl = generateSongThumbnailUrl(song);
-            String audioUrl = generateSongAudioUrl(song);
-            return SongDto.fromSong(song, thumbnailUrl, audioUrl);
+            return SongDto.fromSong(song);
         });
     }
 
@@ -65,19 +51,7 @@ public class SongServiceImpl implements SongService {
     public List<SongDto> getSongsDtoByArtistId(Long artistId) {
         List<Song> songs = getSongsByArtistId(artistId);
         return songs.stream()
-                .map(song -> {
-                    String thumbnailUrl = generateSongThumbnailUrl(song);
-                    String audioUrl = generateSongAudioUrl(song);
-                    return SongDto.fromSong(song, thumbnailUrl, audioUrl);
-                })
+                .map(SongDto::fromSong)
                 .collect(Collectors.toList());
-    }
-
-    private String generateSongThumbnailUrl(Song song) {
-        return DEFAULT_SONG_IMAGE;
-    }
-
-    private String generateSongAudioUrl(Song song) {
-        return DEFAULT_AUDIO_URL;
     }
 }

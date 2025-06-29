@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,8 +74,9 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public List<Playlist> getPlaylistsByUserId(Long userId) {
-        return playlistRepository.findAllVisibleToUser(userId);
+    public List<Playlist> getPlaylistsByUserId(Long userId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return playlistRepository.findAllVisibleToUser(userId, pageable).getContent();
     }
 
     @Override
@@ -82,9 +85,7 @@ public class PlaylistServiceImpl implements PlaylistService {
                 .map(Playlist::getSongs)
                 .orElseGet(HashSet::new)
                 .stream()
-                .map(song -> SongDto.fromSong(song,
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s",
-                        "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3"))
+                .map(song -> SongDto.fromSong(song))
                 .toList();
     }
 }

@@ -22,10 +22,8 @@ public class SongController {
 
     @GetMapping
     public ResponseEntity<List<SongDto>> getAllSongs(@RequestParam int pageSize, @RequestParam int pageNumber) {
-        List<SongDto> songs = songService.getAllSongsDto();
-
         return ResponseEntity
-                .ok(songs.subList(pageNumber * pageSize, Math.min(pageNumber * pageSize + pageSize, songs.size())));
+                .ok(songService.getAllSongs(pageSize, pageNumber).stream().map(SongDto::fromSong).toList());
     }
 
     @GetMapping("/{songId}")

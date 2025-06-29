@@ -2,6 +2,8 @@ package fmi.spotify.media.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +15,6 @@ import fmi.spotify.media.model.Playlist;
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     List<Playlist> findByUserId(Long userId);
 
-    @Query("SELECT DISTINCT p FROM Playlist p LEFT JOIN FETCH p.songs WHERE p.userId = :userId OR p.userId IS NULL")
-    List<Playlist> findAllVisibleToUser(@Param("userId") Long userId);
+    @Query("SELECT p FROM Playlist p WHERE p.userId = :userId OR p.userId IS NULL")
+    Page<Playlist> findAllVisibleToUser(@Param("userId") Long userId, Pageable pageable);
 }

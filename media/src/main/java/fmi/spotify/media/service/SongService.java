@@ -7,9 +7,7 @@ import fmi.spotify.media.model.Song;
 import fmi.spotify.media.model.SongDto;
 
 public interface SongService {
-    List<Song> getAllSongs();
-
-    List<SongDto> getAllSongsDto();
+    List<Song> getAllSongs(int pageSize, int pageNumber);
 
     Optional<Song> getSongById(Long userId, Long songId);
 
