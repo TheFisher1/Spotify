@@ -25,11 +25,6 @@ public class PlaylistServiceImpl implements PlaylistService {
     private SongRepository songRepository;
 
     @Override
-    public List<Playlist> getAllPlaylists() {
-        return playlistRepository.findAll();
-    }
-
-    @Override
     public Optional<Playlist> getPlaylistById(Long id) {
         return playlistRepository.findById(id);
     }
@@ -78,7 +73,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Override
     public List<Playlist> getPlaylistsByUserId(Long userId) {
-        return playlistRepository.findByUserId(userId);
+        return playlistRepository.findAllVisibleToUser(userId);
     }
 
     @Override

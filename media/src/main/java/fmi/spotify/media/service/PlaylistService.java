@@ -7,8 +7,6 @@ import fmi.spotify.media.model.Playlist;
 import fmi.spotify.media.model.SongDto;
 
 public interface PlaylistService {
-    List<Playlist> getAllPlaylists();
-
     Optional<Playlist> getPlaylistById(Long id);
 
     Playlist createPlaylist(Playlist playlist);

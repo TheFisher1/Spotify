@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "playlists")
+@Table(name = "playlist")
 @NoArgsConstructor
 public class Playlist {
 
@@ -34,7 +34,7 @@ public class Playlist {
     @Column
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long userId;
 
     @ManyToMany(fetch = FetchType.LAZY)

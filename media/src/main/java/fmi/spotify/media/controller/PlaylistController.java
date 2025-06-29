@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fmi.spotify.media.model.Playlist;
+import fmi.spotify.media.model.PlaylistDTO;
 import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.service.PlaylistService;
 
@@ -23,11 +24,6 @@ public class PlaylistController {
 
     @Autowired
     private PlaylistService playlistService;
-
-    @GetMapping("/")
-    public ResponseEntity<List<Playlist>> getAllPlaylists() {
-        return ResponseEntity.ok(playlistService.getAllPlaylists());
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Playlist> getPlaylistById(@PathVariable Long id) {
@@ -72,7 +68,8 @@ public class PlaylistController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Playlist>> getPlaylistsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(playlistService.getPlaylistsByUserId(userId));
+    public ResponseEntity<List<PlaylistDTO>> getPlaylistsByUserId(@PathVariable Long userId) {
+        var response = playlistService.getPlaylistsByUserId(userId).stream().map(PlaylistDTO::fromPlaylist).toList();
+        return ResponseEntity.ok(response);
     }
 }
