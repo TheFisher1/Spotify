@@ -29,7 +29,9 @@ public class AuthController {
         User user = userService.authenticateUser(loginForm);
         String token = jwtUtil.generateToken(JWTPayload.fromUser(user));
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok()
+                .header("Authorization", "Bearer " + token)
+                .body(new AuthResponse(token));
     }
 
     @PostMapping("/register")
