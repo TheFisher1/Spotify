@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider, useData } from './contexts/DataContext';
@@ -36,8 +36,7 @@ export function AppContent() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
 
-  // Update allSongs when songs change
-  React.useEffect(() => {
+  useEffect(() => {
     setAllSongs(songs);
   }, [songs]);
 
@@ -82,7 +81,7 @@ export function AppContent() {
     if (songIndex < 0 || songIndex >= allSongs.length) return;
 
     const song = allSongs[songIndex];
-    const track: Track = {
+    const track = {
       id: song.id?.toString() || '1',
       title: song.title,
       artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',

@@ -62,12 +62,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [albums, setAlbums] = useState<Album[]>([]);
     const [artists, setArtists] = useState<Artist[]>([]);
-    const [searchResults, setSearchResults] = useState<{
-        songs: Song[];
-        albums: Album[];
-        playlists: Playlist[];
-        artists: Artist[];
-    }>({ songs: [], albums: [], playlists: [], artists: [] });
 
     const [pagination, setPagination] = useState({
         songs: { pageNumber: 0, pageSize: 5, hasMore: true },
