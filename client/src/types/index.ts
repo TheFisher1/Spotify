@@ -21,7 +21,6 @@ export interface AuthResponse {
     token: string;
 }
 
-// Song represents the backend data structure
 export interface Song {
     id?: number;
     title: string;
@@ -33,33 +32,14 @@ export interface Song {
     genre?: string;
 }
 
-// Duration object from backend (ISO 8601 format like "PT3M30S")
-export interface Duration {
-    seconds?: number;
-    nano?: number;
-    negative?: boolean;
-    zero?: boolean;
-    units?: any[];
-}
-
-// Utility function to format duration
-export const formatDuration = (duration: Duration | string | undefined): string => {
+export const formatDuration = (duration: string | undefined): string => {
     if (!duration) return '0:00';
 
-    // If it's already a string, return as is
     if (typeof duration === 'string') return duration;
-
-    // If it's a Duration object with seconds
-    if (duration.seconds !== undefined) {
-        const minutes = Math.floor(duration.seconds / 60);
-        const seconds = duration.seconds % 60;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
 
     return '0:00';
 };
 
-// Track represents the music player data structure
 export interface Track {
     id: string;
     title: string;
