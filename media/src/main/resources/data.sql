@@ -25,16 +25,17 @@ INSERT INTO albums (name, artist_id, release_date, genre) VALUES
 ('BANNERS', 2, '2019-03-01', 'Indie Pop'),
 ('Motion', 3, '2014-10-31', 'Electronic'),
 ('Mylo Xyloto', 4, '2011-10-24', 'Alternative Rock'),
-('American Beauty/American Psycho', 5, '2015-01-20', 'Pop Rock'),
+('American Beauty American Psycho', 5, '2015-01-20', 'Pop Rock'),
 ('La 167', 6, '2021-11-19', 'Reggaeton'),
 ('Some Nights', 7, '2012-02-21', 'Indie Pop'),
 ('Evolve', 8, '2017-06-23', 'Alternative Rock'),
-('Origins', 8, '2018-11-09', 'Alternative Rock'),
-('Mercury - Act 1', 8, '2021-09-03', 'Alternative Rock'),
+('Mercury - Act 1', 8, '2018-11-09', 'Alternative Rock'),
+('Loom', 8, '2021-09-03', 'Alternative Rock'),
 ('Mercury - Act 2', 8, '2022-07-01', 'Alternative Rock'),
 ('Electronic Vibes', 9, '2020-01-01', 'Electronic'),
 ('Love + War', 10, '2015-09-11', 'R&B'),
 ('Death of a Bachelor', 11, '2016-01-15', 'Pop Rock');
+('Origins', 8, '2018-11-09', 'Alternative Rock')
 
 INSERT INTO song (title, duration, album_id, artist_id) VALUES
 ('Hey Brother', 255, 1, 1),
@@ -44,14 +45,14 @@ INSERT INTO song (title, duration, album_id, artist_id) VALUES
 ('Centuries', 228, 5, 5),
 ('Pepas', 287, 6, 6),
 ('We Are Young ft. Janelle Monae', 252, 7, 7),
-('Bad Liar', 260, 8, 8),
+('Bad Liar', 260, 15, 8),
 ('My Life', 222, 9, 8),
 ('Wake Up', 175, 10, 8),
-('Walking The Wire', 217, 11, 8),
-('Waves', 225, 8, 8),
+('Walking The Wire', 217, 8, 8),
+('Waves', 225, 11, 8),
 ('Heroes Tonight feat. Johnning', 198, 12, 9),
 ('Walk', 214, 13, 10),
-('House of Memories', 208, 14, 11);
+('House of memories', 208, 14, 11);
 
 INSERT INTO song_genres (song_id, genre_id) VALUES
 (1, 1),
