@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SearchIcon } from 'lucide-react';
 import PlaylistCard from '../components/PlaylistCard';
 import AlbumCard from '../components/AlbumCard';
@@ -6,7 +6,8 @@ import ArtistCard from '../components/ArtistCard';
 import SongCard from '../components/SongCard';
 import { mediaService } from '../services/mediaService';
 import { artistService } from '../services/artistService';
-import { Song, Album, Playlist, Artist } from '../types';
+import { Song, Artist, Album, Playlist } from '../types';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SearchProps {
   setCurrentTrack: (track: any) => void;
@@ -18,7 +19,7 @@ interface SearchResult {
   id: string;
   title?: string;
   name?: string;
-  artist?: string;
+  artist?: Artist;
   description?: string;
   cover?: string;
   image?: string;
@@ -62,57 +63,56 @@ const Search = ({
     return () => clearTimeout(searchTimeout);
   }, [searchQuery]);
 
+  const { user } = useAuth();
+
   const performSearch = async () => {
     try {
       setLoading(true);
       setError('');
 
       const [songs, albums, playlists, artists] = await Promise.all([
-        mediaService.searchSongs(searchQuery),
-        mediaService.getAllAlbums(), // You might want to add search to albums
-        mediaService.getAllPlaylists(), // You might want to add search to playlists
-        artistService.getAllArtists() // You might want to add search to artists
+        mediaService.getSongs({ pageSize: 50, pageNumber: 0 }),
+        mediaService.getAllAlbums(),
+        mediaService.getUserPlaylists(user?.id!),
+        artistService.getAllArtists()
       ]);
 
       const results: SearchResult[] = [];
 
-      // Add songs
-      songs.forEach(song => {
+      songs.forEach((song: Song) => {
         results.push({
           type: 'song',
           id: song.id?.toString() || '',
           title: song.title,
           artist: song.artist,
-          cover: song.thumbnail || song.cover,
+          cover: song.thumbnail || song.thumbnail,
           song: song
         });
       });
 
-      // Add albums
-      albums.forEach(album => {
+      albums.forEach((album: Album) => {
         results.push({
           type: 'album',
           id: album.id?.toString() || '',
-          title: album.title,
+          title: album.name,
           artist: album.artist,
           cover: album.cover,
           year: album.releaseDate?.split('-')[0]
         });
       });
 
-      // Add playlists
-      playlists.forEach(playlist => {
+      playlists.forEach((playlist: Playlist) => {
         results.push({
           type: 'playlist',
           id: playlist.id?.toString() || '',
           title: playlist.name,
           description: playlist.description,
-          cover: playlist.cover
+          cover: playlist.coverUrl
         });
       });
 
       // Add artists
-      artists.forEach(artist => {
+      artists.forEach((artist: Artist) => {
         results.push({
           type: 'artist',
           id: artist.id?.toString() || '',
@@ -186,7 +186,7 @@ const Search = ({
                     key={item.id}
                     id={item.id}
                     title={item.title || ''}
-                    artist={item.artist || ''}
+                    artist={item.artist}
                     cover={item.cover || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
                     year={item.year || '2024'}
                     setCurrentTrack={setCurrentTrack}
@@ -196,11 +196,16 @@ const Search = ({
               } else if (item.type === 'playlist') {
                 return (
                   <PlaylistCard
-                    key={item.id}
                     id={item.id}
+                    key={item.id}
+                    playlist={{
+                      id: item.id,
+                      name: item.title || '',
+                      description: item.description || '',
+                      coverUrl: item.cover
+                    }}
                     title={item.title || ''}
                     description={item.description || ''}
-                    cover={item.cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'}
                     setCurrentTrack={setCurrentTrack}
                     handlePlayPause={handlePlayPause}
                   />

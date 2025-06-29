@@ -1,5 +1,6 @@
 import api from './api';
 import { LoginForm, RegistrationForm, AuthResponse, User } from '../types';
+import { jwtUtils } from '../utils/jwtUtils';
 
 export const authService = {
 
@@ -24,7 +25,8 @@ export const authService = {
     },
 
     isAuthenticated(): boolean {
-        return !!localStorage.getItem('authToken');
+        const token = this.getToken();
+        return token ? jwtUtils.validateToken(token) : false;
     },
 
     getToken(): string | null {
@@ -42,5 +44,10 @@ export const authService = {
     getUser(): User | null {
         const userStr = localStorage.getItem('user');
         return userStr ? JSON.parse(userStr) : null;
+    },
+
+    validateToken(): boolean {
+        const token = this.getToken();
+        return token ? jwtUtils.validateToken(token) : false;
     }
 }; 

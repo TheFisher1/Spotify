@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { authService } from './authService';
+import { jwtUtils } from '../utils/jwtUtils';
 
 const api: AxiosInstance = axios.create({
     baseURL: 'http://localhost:8080',
@@ -10,10 +12,13 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
+        const token = authService.getToken();
+        if (token && jwtUtils.validateToken(token)) {
             config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            authService.logout();
         }
+
         return config;
     },
     (error) => {
@@ -27,9 +32,8 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
+            authService.logout();
+            window.location.href = '/';
         }
 
         return Promise.reject(error);

@@ -59,13 +59,11 @@ export const imageService = {
         return response.data;
     },
 
-    // Get default image URL for a specific type
     async getDefaultImageUrl(type: string): Promise<{ imageUrl: string; type: string }> {
         const response = await api.get<{ imageUrl: string; type: string }>(`/media/images/default/${type}`);
         return response.data;
     },
 
-    // Generate blob name for any image type
     async generateBlobName(fileName: string, folder: string): Promise<{ blobName: string; publicUrl: string; folder: string; message: string }> {
         const response = await api.post<{ blobName: string; publicUrl: string; folder: string; message: string }>('/media/images/generate-blob-name', null, {
             params: { fileName, folder }
@@ -73,7 +71,6 @@ export const imageService = {
         return response.data;
     },
 
-    // Helper function to upload a file using a pre-signed URL
     async uploadFileToAzure(uploadUrl: string, file: File): Promise<boolean> {
         try {
             const response = await fetch(uploadUrl, {
@@ -91,17 +88,14 @@ export const imageService = {
         }
     },
 
-    // Helper function to get a default image URL for albums
     getDefaultAlbumCover(): string {
         return 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
     },
 
-    // Helper function to get a default image URL for artists
     getDefaultArtistImage(): string {
         return 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
     },
 
-    // Helper function to get a default image URL for playlists
     getDefaultPlaylistCover(): string {
         return 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
     }

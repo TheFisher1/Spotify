@@ -1,5 +1,6 @@
+import React from 'react';
 import { PlayIcon } from 'lucide-react';
-import { Song } from '../types';
+import { Song, formatDuration } from '../types';
 
 interface SongCardProps {
     song: Song;
@@ -15,13 +16,13 @@ const SongCard = ({
 
     const handlePlay = () => {
         setCurrentTrack({
-            id: song.id?.toString(),
+            id: song.id?.toString() || '1',
             title: song.title,
             artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
-            album: typeof song.album === 'string' ? song.album : song.album?.title || 'Unknown Album',
-            duration: song.duration || '0:00',
-            cover: song.thumbnail || 'https://images.unsplash.com/photo-1611339555312-e607c8352fd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
-            audioUrl: song.url || ''
+            album: typeof song.album === 'string' ? song.album : song.album?.name || 'Unknown Album',
+            duration: formatDuration(song.duration),
+            cover: song.thumbnail || '',
+            audioUrl: song.url
         });
         handlePlayPause();
     };
@@ -36,14 +37,14 @@ const SongCard = ({
                 />
                 <button
                     onClick={handlePlay}
-                    className="absolute bottom-2 right-2 bg-green-500 rounded-full p-3 shadow-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+                    className="absolute bottom-2 right-2 bg-green-500 rounded-full p-3 shadow-lg opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all hover:bg-green-400"
                 >
                     <PlayIcon className="h-6 w-6 text-black" />
                 </button>
             </div>
             <h3 className="font-bold truncate">{song.title}</h3>
             <p className="text-sm text-zinc-400 mt-1">
-                {typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist'} • {typeof song.album === 'string' ? song.album : song.album?.title || 'Unknown Album'}
+                {typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist'} • {typeof song.album === 'string' ? song.album : song.album?.name || 'Unknown Album'}
             </p>
             {song.duration && (
                 <p className="text-xs text-zinc-500 mt-1">{song.duration}</p>

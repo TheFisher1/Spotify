@@ -82,7 +82,9 @@ public class PlaylistServiceImpl implements PlaylistService {
                 .map(Playlist::getSongs)
                 .orElseGet(HashSet::new)
                 .stream()
-                .map(song -> SongDto.fromSong(song, null, null))
+                .map(song -> SongDto.fromSong(song,
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s",
+                        "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3"))
                 .toList();
     }
 }

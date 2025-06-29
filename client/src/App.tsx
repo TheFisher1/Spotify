@@ -7,7 +7,7 @@ import Search from './pages/Search';
 import Library from './pages/Library';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
-import { Track } from './types';
+import { Track, Playlist, Song, formatDuration } from './types';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -28,6 +28,9 @@ export function AppContent() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [allSongs, setAllSongs] = useState<Song[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -41,7 +44,7 @@ export function AppContent() {
       setIsPlaying(false);
       setCurrentTime(0);
 
-      audioRef.current.src = track.audioUrl || track.url || '';
+      audioRef.current.src = track.audioUrl || track.cover || '';
       audioRef.current.load();
 
       await audioRef.current.play();
@@ -49,6 +52,44 @@ export function AppContent() {
     } catch (error) {
       console.error('Error playing track:', error);
     }
+  };
+
+  const playSongFromPlaylist = async (playlist: Playlist, songIndex: number) => {
+    if (!playlist.songs || songIndex >= playlist.songs.length) return;
+
+    const song = playlist.songs[songIndex];
+    const track: Track = {
+      id: song.id?.toString() || '1',
+      title: song.title,
+      artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
+      album: typeof song.album === 'string' ? song.album : song.album?.name || playlist.name,
+      duration: formatDuration(song.duration),
+      cover: song.thumbnail || playlist.coverUrl || '',
+      audioUrl: song.url
+    };
+
+    setCurrentPlaylist(playlist);
+    setCurrentSongIndex(songIndex);
+    await playTrack(track);
+  };
+
+  const playSongFromAllSongs = async (songIndex: number) => {
+    if (songIndex < 0 || songIndex >= allSongs.length) return;
+
+    const song = allSongs[songIndex];
+    const track: Track = {
+      id: song.id?.toString() || '1',
+      title: song.title,
+      artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
+      album: typeof song.album === 'string' ? song.album : song.album?.name || 'Unknown Album',
+      duration: formatDuration(song.duration),
+      cover: song.thumbnail || '',
+      audioUrl: song.url
+    };
+
+    setCurrentPlaylist(null);
+    setCurrentSongIndex(songIndex);
+    await playTrack(track);
   };
 
   const pauseTrack = () => {
@@ -108,6 +149,14 @@ export function AppContent() {
   const handleTrackEnd = () => {
     setIsPlaying(false);
     setCurrentTime(0);
+
+    // Auto-play next song if we're in a playlist
+    if (currentPlaylist && currentPlaylist.songs) {
+      const nextIndex = currentSongIndex + 1;
+      if (nextIndex < currentPlaylist.songs.length) {
+        playSongFromPlaylist(currentPlaylist, nextIndex);
+      }
+    }
   };
 
   const handleAudioError = () => {
@@ -115,15 +164,51 @@ export function AppContent() {
   };
 
   const handleTrackSelect = (track: Track) => {
+    // Clear playlist state when playing individual track
+    setCurrentPlaylist(null);
+    setCurrentSongIndex(0);
     playTrack(track);
   };
 
-  const handleNextTrack = () => {
-    console.log('Next track clicked');
+  const handlePlaylistSelect = (playlist: Playlist) => {
+    // Start playing from the first song of the playlist
+    playSongFromPlaylist(playlist, 0);
   };
 
-  const handlePreviousTrack = () => {
-    console.log('Previous track clicked');
+  const handleSongsLoaded = (songs: Song[]) => {
+    setAllSongs(songs);
+  };
+
+  const onNextTrack = () => {
+    if (currentPlaylist && currentPlaylist.songs) {
+      // Next song in playlist
+      const nextIndex = currentSongIndex + 1;
+      if (nextIndex < currentPlaylist.songs.length) {
+        playSongFromPlaylist(currentPlaylist, nextIndex);
+      }
+    } else if (allSongs.length > 0) {
+      // Next song in all songs
+      const nextIndex = currentSongIndex + 1;
+      if (nextIndex < allSongs.length) {
+        playSongFromAllSongs(nextIndex);
+      }
+    }
+  };
+
+  const onPreviousTrack = () => {
+    if (currentPlaylist && currentPlaylist.songs) {
+      // Previous song in playlist
+      const prevIndex = currentSongIndex - 1;
+      if (prevIndex >= 0) {
+        playSongFromPlaylist(currentPlaylist, prevIndex);
+      }
+    } else if (allSongs.length > 0) {
+      // Previous song in all songs
+      const prevIndex = currentSongIndex - 1;
+      if (prevIndex >= 0) {
+        playSongFromAllSongs(prevIndex);
+      }
+    }
   };
 
   if (!isAuthenticated) {
@@ -142,6 +227,8 @@ export function AppContent() {
                 <Home
                   setCurrentTrack={handleTrackSelect}
                   handlePlayPause={togglePlayPause}
+                  onPlaylistSelect={handlePlaylistSelect}
+                  onSongsLoaded={handleSongsLoaded}
                 />
               }
             />
@@ -177,8 +264,8 @@ export function AppContent() {
         onSeek={handleSeek}
         volume={volume}
         onVolumeChange={handleVolumeChange}
-        onNextTrack={handleNextTrack}
-        onPreviousTrack={handlePreviousTrack}
+        onNextTrack={onNextTrack}
+        onPreviousTrack={onPreviousTrack}
       />
 
       <audio

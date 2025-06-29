@@ -1,5 +1,5 @@
 import api from './api';
-import { Song, Album, Playlist } from '../types';
+import { Album, Playlist, Song } from '../types';
 
 export const mediaService = {
 
@@ -10,11 +10,6 @@ export const mediaService = {
 
     async getSongById(songId: number, userId: number): Promise<Song> {
         const response = await api.get<Song>(`/media/songs/${songId}?userId=${userId}`);
-        return response.data;
-    },
-
-    async searchSongs(query: string): Promise<Song[]> {
-        const response = await api.get<Song[]>(`/media/songs/search?query=${encodeURIComponent(query)}`);
         return response.data;
     },
 
@@ -61,14 +56,27 @@ export const mediaService = {
         await api.delete(`/media/albums/${id}`);
     },
 
-    // Playlists
     async getAllPlaylists(): Promise<Playlist[]> {
         const response = await api.get<Playlist[]>('/media/playlists');
         return response.data;
     },
 
-    async getPlaylistById(id: number): Promise<Playlist> {
+    async getPlaylistById(id: string): Promise<Playlist> {
         const response = await api.get<Playlist>(`/media/playlists/${id}`);
+        return response.data;
+    },
+
+    async getPlaylistWithSongs(id: string): Promise<Playlist> {
+        const playlist = await this.getPlaylistById(id);
+        const songs = await this.getSongsInPlaylist(id);
+        return {
+            ...playlist,
+            songs: songs
+        };
+    },
+
+    async getSongsInPlaylist(playlistId: string): Promise<Song[]> {
+        const response = await api.get<Song[]>(`/media/playlists/${playlistId}/songs`);
         return response.data;
     },
 

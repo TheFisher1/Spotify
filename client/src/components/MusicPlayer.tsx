@@ -1,17 +1,7 @@
 import React from 'react';
 import { PlayIcon, PauseIcon, SkipBackIcon, SkipForwardIcon, VolumeIcon, Repeat2Icon, ShuffleIcon } from 'lucide-react';
 import Button from './Button';
-
-interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  album: string;
-  duration: string;
-  cover: string;
-  audioUrl?: string;
-  url?: string;
-}
+import { Track } from '../types';
 
 interface MusicPlayerProps {
   currentTrack: Track | null;
@@ -48,6 +38,8 @@ const MusicPlayer = ({
     return null;
   }
 
+  console.log(currentTrack)
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-4 flex items-center justify-between">
       <div className="flex items-center w-1/4">
@@ -63,8 +55,8 @@ const MusicPlayer = ({
           <Button variant="icon" size="sm" className="mx-2">
             <ShuffleIcon className="h-4 w-4" />
           </Button>
-          <Button variant="icon" size="sm" className="mx-2">
-            <SkipBackIcon onClick={onPreviousTrack} className="h-5 w-5" />
+          <Button variant="icon" size="sm" className="mx-2" onClick={onPreviousTrack}>
+            <SkipBackIcon className="h-5 w-5" />
           </Button>
           <Button
             variant="play"
@@ -74,13 +66,14 @@ const MusicPlayer = ({
           >
             {isPlaying ? <PauseIcon className="h-5 w-5" /> : <PlayIcon className="h-5 w-5" />}
           </Button>
-          <Button variant="icon" size="sm" className="mx-2">
-            <SkipForwardIcon onClick={onNextTrack} className="h-5 w-5" />
+          <Button variant="icon" size="sm" className="mx-2" onClick={onNextTrack}>
+            <SkipForwardIcon className="h-5 w-5" />
           </Button>
           <Button variant="icon" size="sm" className="mx-2">
             <Repeat2Icon className="h-4 w-4" />
           </Button>
         </div>
+
         <div className="flex items-center w-full">
           <span className="text-xs text-zinc-400 w-10">
             {formatTime(currentTime)}

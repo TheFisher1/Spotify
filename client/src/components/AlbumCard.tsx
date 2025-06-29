@@ -1,10 +1,11 @@
 import React from 'react';
 import PlayButton from './PlayButton';
+import { Artist } from '../types';
 
 interface AlbumProps {
   id: string;
   title: string;
-  artist: string;
+  artist?: Artist;
   cover: string;
   year: string;
   setCurrentTrack: (track: any) => void;
@@ -23,9 +24,9 @@ const AlbumCard: React.FC<AlbumProps> = ({
     setCurrentTrack({
       id: '1',
       title: 'First Track from ' + title,
-      artist: artist,
+      artist: typeof artist === 'string' ? artist : artist?.name || 'Unknown Artist',
       album: title,
-      duration: '3:20',
+      duration: '3:45',
       cover: cover
     });
     handlePlayPause();
@@ -38,7 +39,7 @@ const AlbumCard: React.FC<AlbumProps> = ({
     </div>
     <h3 className="font-bold truncate">{title}</h3>
     <p className="text-sm text-zinc-400 mt-1">
-      {year} • {artist}
+      {year} • {typeof artist === 'string' ? artist : artist?.name || 'Unknown Artist'}
     </p>
   </div>;
 };
