@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import fmi.spotify.media.model.Playlist;
 import fmi.spotify.media.model.PlaylistDTO;
 import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.service.PlaylistService;
+import fmi.spotify.media.util.PlaylistAuthorizationUtil;
 
 @RestController
 @RequestMapping("/media/playlists")
@@ -28,9 +30,13 @@ public class PlaylistController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Playlist> getPlaylistById(@PathVariable Long id) {
-        return playlistService.getPlaylistById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        var playlist = playlistService.getPlaylistById(id);
+        if (playlist.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(playlist.get());
     }
 
     @PostMapping
@@ -39,43 +45,79 @@ public class PlaylistController {
     }
 
     @PutMapping("/{playlistId}")
-    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist) {
-        return playlistService.updatePlaylist(playlistId, playlist)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist,
+            ServerWebExchange exchange) {
+        return PlaylistAuthorizationUtil.withPlaylistAuthorization(
+                playlistId,
+                exchange,
+                playlistService,
+                existingPlaylist -> {
+                    existingPlaylist.setName(playlist.getName());
+                    existingPlaylist.setDescription(playlist.getDescription());
+                    existingPlaylist.setPublic(playlist.isPublic());
+                    return ResponseEntity.ok(playlistService.updatePlaylist(playlistId, existingPlaylist).orElse(null));
+                });
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlaylist(@PathVariable Long id) {
-        playlistService.deletePlaylist(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deletePlaylist(@PathVariable Long id, ServerWebExchange exchange) {
+        return PlaylistAuthorizationUtil.withPlaylistAuthorization(
+                id,
+                exchange,
+                playlistService,
+                playlist -> {
+                    if (playlist.isPublic()) {
+                        return ResponseEntity.badRequest().body("Playlist is currently public and cannot be deleted.");
+                    }
+                    playlistService.deletePlaylist(id);
+                    return ResponseEntity.status(204).body("");
+                },
+                () -> ResponseEntity.status(401).body("Unauthorized"));
     }
 
     @GetMapping("/{playlistId}/songs")
     public ResponseEntity<List<SongDto>> getSongsInPlaylist(@PathVariable Long playlistId) {
-        return ResponseEntity.ok(playlistService.getSongsInPlaylist(playlistId));
+        if (playlistService.getPlaylistById(playlistId).isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().body(playlistService.getSongsInPlaylist(playlistId));
     }
 
     @PostMapping("/{playlistId}/songs/{songId}")
-    public ResponseEntity<Void> addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long songId) {
-        playlistService.addSongToPlaylist(playlistId, songId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long songId,
+            ServerWebExchange exchange) {
+        return PlaylistAuthorizationUtil.withPlaylistOwnership(
+                playlistId,
+                exchange,
+                playlistService,
+                () -> {
+                    playlistService.addSongToPlaylist(playlistId, songId);
+                    return ResponseEntity.ok().<Void>build();
+                });
     }
 
     @DeleteMapping("/{playlistId}/songs/{songId}")
-    public ResponseEntity<Void> removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long songId) {
-        playlistService.removeSongFromPlaylist(playlistId, songId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long songId,
+            ServerWebExchange exchange) {
+        return PlaylistAuthorizationUtil.withPlaylistOwnership(
+                playlistId,
+                exchange,
+                playlistService,
+                () -> {
+                    playlistService.removeSongFromPlaylist(playlistId, songId);
+                    return ResponseEntity.ok().<Void>build();
+                });
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<PlaylistDTO>> getPlaylistsByUserId(
             @PathVariable Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
         var playlistsPage = playlistService
-                .getPlaylistsByUserId(userId, page, size).stream()
+                .getPlaylistsByUserId(userId, pageNumber, pageSize).stream()
                 .map(PlaylistDTO::fromPlaylist)
                 .toList();
 
