@@ -1,5 +1,5 @@
 import { Song } from "../types";
-import SongCard from "./SongCard";
+import { SongCard } from "./SongCard";
 
 interface SongCollectionProps {
     songs: Song[];

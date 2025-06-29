@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlayIcon } from 'lucide-react';
 import { Song, formatDuration } from '../types';
 
@@ -8,11 +7,11 @@ interface SongCardProps {
     handlePlayPause: () => void;
 }
 
-const SongCard = ({
+export function SongCard({
     song,
     setCurrentTrack,
     handlePlayPause
-}: SongCardProps) => {
+}: SongCardProps) {
 
     const handlePlay = () => {
         setCurrentTrack({
@@ -52,5 +51,3 @@ const SongCard = ({
         </div>
     );
 };
-
-export default SongCard; 

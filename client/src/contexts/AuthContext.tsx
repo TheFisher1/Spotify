@@ -10,6 +10,15 @@ interface AuthContextType {
     register: (userData: RegistrationForm) => Promise<void>;
     logout: () => void;
     loading: boolean;
+
+    isLoginModalOpen: boolean;
+    isRegisterModalOpen: boolean;
+    openLoginModal: () => void;
+    openRegisterModal: () => void;
+    closeLoginModal: () => void;
+    closeRegisterModal: () => void;
+    switchToRegister: () => void;
+    switchToLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +38,9 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
     useEffect(() => {
         const initializeAuth = () => {
@@ -84,13 +96,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
     };
 
+    const openLoginModal = () => {
+        setIsLoginModalOpen(true);
+        setIsRegisterModalOpen(false);
+    };
+
+    const openRegisterModal = () => {
+        setIsRegisterModalOpen(true);
+        setIsLoginModalOpen(false);
+    };
+
+    const closeLoginModal = () => {
+        setIsLoginModalOpen(false);
+    };
+
+    const closeRegisterModal = () => {
+        setIsRegisterModalOpen(false);
+    };
+
+    const switchToRegister = () => {
+        setIsLoginModalOpen(false);
+        setIsRegisterModalOpen(true);
+    };
+
+    const switchToLogin = () => {
+        setIsRegisterModalOpen(false);
+        setIsLoginModalOpen(true);
+    };
+
     const value: AuthContextType = {
         user,
         isAuthenticated: !!user,
         login,
         register,
         logout,
-        loading
+        loading,
+        isLoginModalOpen,
+        isRegisterModalOpen,
+        openLoginModal,
+        openRegisterModal,
+        closeLoginModal,
+        closeRegisterModal,
+        switchToRegister,
+        switchToLogin
     };
 
     return (

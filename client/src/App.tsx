@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { DataProvider, useData } from './contexts/DataContext';
-import Sidebar from './components/Sidebar';
-import MusicPlayer from './components/MusicPlayer';
+import { Sidebar } from './components/Sidebar';
+import { MusicPlayer } from './components/MusicPlayer';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import { Track, Playlist, Song, formatDuration } from './types';
@@ -36,7 +36,7 @@ export function AppContent() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.8);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setAllSongs(songs);
   }, [songs]);
 
@@ -81,7 +81,7 @@ export function AppContent() {
     if (songIndex < 0 || songIndex >= allSongs.length) return;
 
     const song = allSongs[songIndex];
-    const track = {
+    const track: Track = {
       id: song.id?.toString() || '1',
       title: song.title,
       artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
@@ -266,9 +266,7 @@ export function App() {
     <Router>
       <AuthProvider>
         <DataProvider>
-          <ProtectedRoute>
-            <AppContent />
-          </ProtectedRoute>
+          <AppContent />
         </DataProvider>
       </AuthProvider>
     </Router>

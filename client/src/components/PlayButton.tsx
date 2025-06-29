@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlayIcon } from 'lucide-react';
 
 export interface PlayButtonProps {
@@ -7,11 +6,11 @@ export interface PlayButtonProps {
     size?: 'sm' | 'md' | 'lg';
 }
 
-const PlayButton: React.FC<PlayButtonProps> = ({
+export function PlayButton({
     onClick,
     className = '',
     size = 'md'
-}) => {
+}: PlayButtonProps) {
     const sizeClasses = {
         sm: 'p-2',
         md: 'p-3',
@@ -35,5 +34,3 @@ const PlayButton: React.FC<PlayButtonProps> = ({
         </button>
     );
 };
-
-export default PlayButton;

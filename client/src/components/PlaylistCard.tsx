@@ -12,7 +12,7 @@ interface PlaylistProps {
   onPlaylistSelect?: (playlist: Playlist) => void;
 }
 
-const PlaylistCard = ({
+export function PlaylistCard({
   id,
   title,
   description,
@@ -20,7 +20,7 @@ const PlaylistCard = ({
   handlePlayPause,
   playlist,
   onPlaylistSelect
-}: PlaylistProps) => {
+}: PlaylistProps) {
   const handlePlay = async () => {
     try {
       const playlistWithSongs = await mediaService.getPlaylistWithSongs(playlist.id);

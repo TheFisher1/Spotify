@@ -2,8 +2,10 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { authService } from './authService';
 import { jwtUtils } from '../utils/jwtUtils';
 
+const BaseURL = import.meta.env.VITE_API_URL
+
 const api: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: BaseURL,
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',

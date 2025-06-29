@@ -1,9 +1,8 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HomeIcon, SearchIcon, PlusSquareIcon, HeartIcon } from 'lucide-react';
 import Button from "./Button";
 
-const Sidebar: React.FC = () => {
+export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -67,5 +66,3 @@ const Sidebar: React.FC = () => {
     </div>
   );
 };
-
-export default Sidebar;

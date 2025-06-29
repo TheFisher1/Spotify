@@ -16,7 +16,7 @@ interface MusicPlayerProps {
   onPreviousTrack: () => void;
 }
 
-const MusicPlayer = ({
+export function MusicPlayer({
   currentTrack,
   isPlaying,
   currentTime,
@@ -27,7 +27,7 @@ const MusicPlayer = ({
   onVolumeChange,
   onNextTrack,
   onPreviousTrack,
-}: MusicPlayerProps) => {
+}: MusicPlayerProps) {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -113,5 +113,3 @@ const MusicPlayer = ({
     </div>
   );
 };
-
-export default MusicPlayer;

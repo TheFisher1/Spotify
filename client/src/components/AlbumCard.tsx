@@ -1,5 +1,4 @@
-import React from 'react';
-import PlayButton from './PlayButton';
+import { PlayButton } from './PlayButton';
 import { Artist } from '../types';
 
 interface AlbumProps {
@@ -12,14 +11,14 @@ interface AlbumProps {
   handlePlayPause: () => void;
 }
 
-const AlbumCard: React.FC<AlbumProps> = ({
+export function AlbumCard({
   title,
   artist,
   cover,
   year,
   setCurrentTrack,
   handlePlayPause
-}) => {
+}: AlbumProps) {
   const handlePlay = () => {
     setCurrentTrack({
       id: '1',
