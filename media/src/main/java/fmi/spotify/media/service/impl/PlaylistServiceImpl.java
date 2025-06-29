@@ -1,14 +1,18 @@
 package fmi.spotify.media.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fmi.spotify.media.model.Playlist;
 import fmi.spotify.media.model.Song;
+import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.repository.PlaylistRepository;
 import fmi.spotify.media.repository.SongRepository;
 import fmi.spotify.media.service.PlaylistService;
@@ -21,11 +25,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Autowired
     private SongRepository songRepository;
-
-    @Override
-    public List<Playlist> getAllPlaylists() {
-        return playlistRepository.findAll();
-    }
 
     @Override
     public Optional<Playlist> getPlaylistById(Long id) {
@@ -75,7 +74,18 @@ public class PlaylistServiceImpl implements PlaylistService {
     }
 
     @Override
-    public List<Playlist> getPlaylistsByUserId(Long userId) {
-        return playlistRepository.findByUserId(userId);
+    public List<Playlist> getPlaylistsByUserId(Long userId, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return playlistRepository.findAllVisibleToUser(userId, pageable).getContent();
+    }
+
+    @Override
+    public List<SongDto> getSongsInPlaylist(Long playlistId) {
+        return playlistRepository.findById(playlistId)
+                .map(Playlist::getSongs)
+                .orElseGet(HashSet::new)
+                .stream()
+                .map(song -> SongDto.fromSong(song))
+                .toList();
     }
 }

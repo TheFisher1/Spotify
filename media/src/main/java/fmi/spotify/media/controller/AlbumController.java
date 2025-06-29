@@ -25,7 +25,7 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<AlbumDto>> getAllAlbums() {
         return ResponseEntity.ok(albumService.getAllAlbumsDto());
     }

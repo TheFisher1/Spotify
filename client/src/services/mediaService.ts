@@ -1,20 +1,15 @@
 import api from './api';
-import { Song, Album, Playlist } from '../types';
+import { Album, Playlist, Song } from '../types';
 
 export const mediaService = {
-    // Songs
-    async getAllSongs(): Promise<Song[]> {
-        const response = await api.get<Song[]>('/media/songs');
+
+    async getSongs({ pageSize, pageNumber }: { pageSize: number, pageNumber: number }): Promise<Song[]> {
+        const response = await api.get<Song[]>(`/media/songs?pageNumber=${pageNumber}&pageSize=${pageSize}`);
         return response.data;
     },
 
     async getSongById(songId: number, userId: number): Promise<Song> {
         const response = await api.get<Song>(`/media/songs/${songId}?userId=${userId}`);
-        return response.data;
-    },
-
-    async searchSongs(query: string): Promise<Song[]> {
-        const response = await api.get<Song[]>(`/media/songs/search?query=${encodeURIComponent(query)}`);
         return response.data;
     },
 
@@ -61,19 +56,35 @@ export const mediaService = {
         await api.delete(`/media/albums/${id}`);
     },
 
-    // Playlists
-    async getAllPlaylists(): Promise<Playlist[]> {
-        const response = await api.get<Playlist[]>('/media/playlists');
-        return response.data;
-    },
-
-    async getPlaylistById(id: number): Promise<Playlist> {
+    async getPlaylistById(id: string): Promise<Playlist> {
         const response = await api.get<Playlist>(`/media/playlists/${id}`);
         return response.data;
     },
 
-    async getUserPlaylists(userId: number): Promise<Playlist[]> {
-        const response = await api.get<Playlist[]>(`/media/playlists/user/${userId}`);
+    async getPlaylistWithSongs(id: string): Promise<Playlist> {
+        const playlist = await this.getPlaylistById(id);
+        const songs = await this.getSongsInPlaylist(id);
+        return {
+            ...playlist,
+            songs: songs
+        };
+    },
+
+    async getSongsInPlaylist(playlistId: string): Promise<Song[]> {
+        const response = await api.get<Song[]>(`/media/playlists/${playlistId}/songs`);
+        return response.data;
+    },
+
+    async getUserPlaylists(userId: number, page: number = 0, size: number = 10): Promise<{
+        content: Playlist[];
+        totalElements: number;
+        totalPages: number;
+        currentPage: number;
+        size: number;
+        hasNext: boolean;
+        hasPrevious: boolean;
+    }> {
+        const response = await api.get(`/media/playlists/user/${userId}?page=${page}&size=${size}`);
         return response.data;
     },
 

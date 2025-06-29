@@ -24,32 +24,47 @@ export interface AuthResponse {
 export interface Song {
     id?: number;
     title: string;
-    artist?: any;
-    album?: any;
-    duration?: any;
+    artist?: Artist;
+    album?: Album;
+    duration?: string;
     thumbnail?: string;
-    cover?: string;
-    audioUrl?: string;
     url?: string;
-    artistId?: number;
     genre?: string;
-    filePath?: string;
+}
+
+export const formatDuration = (duration: string | undefined): string => {
+    if (!duration) return '0:00';
+
+    if (typeof duration === 'string') return duration;
+
+    return '0:00';
+};
+
+export interface Track {
+    id: string;
+    title: string;
+    artist: string;
+    album: string;
+    duration: string;
+    cover: string;
+    audioUrl?: string;
 }
 
 export interface Album {
     id?: number;
-    title: string;
-    artist: string;
-    cover?: string;
+    name: string;
+    artist?: Artist;
+    duration?: string;
     releaseDate?: string;
-    songs?: Song[];
+    cover?: string;
+    genre?: string;
 }
 
 export interface Playlist {
-    id?: number;
+    id: string;
     name: string;
     description?: string;
-    cover?: string;
+    coverUrl?: string;
     userId?: number;
     songs?: Song[];
 }
@@ -74,17 +89,6 @@ export interface Follow {
     followerId: number;
     followingId: number;
     timestamp?: string;
-}
-
-export interface Track {
-    id: string;
-    title: string;
-    artist: string;
-    album: string;
-    duration: string;
-    cover: string;
-    audioUrl?: string;
-    url?: string;
 }
 
 export interface ApiResponse<T> {

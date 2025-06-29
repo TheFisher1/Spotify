@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, LoginForm, RegistrationForm } from '../types';
 import { authService } from '../services/authService';
+import { jwtUtils } from '../utils/jwtUtils';
 
 interface AuthContextType {
     user: User | null;
@@ -9,6 +10,15 @@ interface AuthContextType {
     register: (userData: RegistrationForm) => Promise<void>;
     logout: () => void;
     loading: boolean;
+
+    isLoginModalOpen: boolean;
+    isRegisterModalOpen: boolean;
+    openLoginModal: () => void;
+    openRegisterModal: () => void;
+    closeLoginModal: () => void;
+    closeRegisterModal: () => void;
+    switchToRegister: () => void;
+    switchToLogin: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,26 +39,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        // Check if user is already authenticated on app load
-        const token = authService.getToken();
-        const storedUser = authService.getUser();
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 
-        if (token && storedUser) {
-            setUser(storedUser);
-        }
-        setLoading(false);
+    useEffect(() => {
+        const initializeAuth = () => {
+            const token = authService.getToken();
+
+            if (token && jwtUtils.validateToken(token)) {
+                const userFromToken = jwtUtils.getUserFromToken(token);
+                if (userFromToken) {
+                    setUser(userFromToken);
+                    authService.setUser(userFromToken);
+                }
+            } else if (token) {
+                authService.logout();
+            }
+
+            setLoading(false);
+        };
+
+        initializeAuth();
     }, []);
 
     const login = async (credentials: LoginForm) => {
         try {
             const response = await authService.login(credentials);
+
             authService.setToken(response.token);
 
-            // Get user data (you might need to adjust this based on your backend)
-            const userData = { username: credentials.username, email: '' }; // Adjust as needed
-            authService.setUser(userData);
-            setUser(userData);
+            const userFromToken = jwtUtils.getUserFromToken(response.token);
+            if (userFromToken) {
+                setUser(userFromToken);
+                authService.setUser(userFromToken);
+            } else {
+                throw new Error('Invalid token received');
+            }
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
@@ -70,13 +96,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(null);
     };
 
+    const openLoginModal = () => {
+        setIsLoginModalOpen(true);
+        setIsRegisterModalOpen(false);
+    };
+
+    const openRegisterModal = () => {
+        setIsRegisterModalOpen(true);
+        setIsLoginModalOpen(false);
+    };
+
+    const closeLoginModal = () => {
+        setIsLoginModalOpen(false);
+    };
+
+    const closeRegisterModal = () => {
+        setIsRegisterModalOpen(false);
+    };
+
+    const switchToRegister = () => {
+        setIsLoginModalOpen(false);
+        setIsRegisterModalOpen(true);
+    };
+
+    const switchToLogin = () => {
+        setIsRegisterModalOpen(false);
+        setIsLoginModalOpen(true);
+    };
+
     const value: AuthContextType = {
         user,
         isAuthenticated: !!user,
         login,
         register,
         logout,
-        loading
+        loading,
+        isLoginModalOpen,
+        isRegisterModalOpen,
+        openLoginModal,
+        openRegisterModal,
+        closeLoginModal,
+        closeRegisterModal,
+        switchToRegister,
+        switchToLogin
     };
 
     return (

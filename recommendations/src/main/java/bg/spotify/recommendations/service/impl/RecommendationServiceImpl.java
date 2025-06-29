@@ -45,7 +45,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
     }
 
-    // When a new song is added to the system
     public void addNewSong(Long songId, String title, String artist, String album, String genre) {
         try {
             Map<String, Object> values = new HashMap<>();

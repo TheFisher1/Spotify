@@ -1,73 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { PlayIcon, PauseIcon, SkipBackIcon, SkipForwardIcon, VolumeIcon, Repeat2Icon, ShuffleIcon } from 'lucide-react';
-
-interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  album: string;
-  duration: string;
-  cover: string;
-  audioUrl?: string;
-  url?: string; // Azure Blob Storage URL for audio
-}
+import Button from './Button';
+import { Track } from '../types';
 
 interface MusicPlayerProps {
-  currentTrack: Track;
+  currentTrack: Track | null;
   isPlaying: boolean;
-  handlePlayPause: () => void;
   currentTime: number;
   duration: number;
-  onSeek: (e: React.ChangeEvent<HTMLInputElement>) => void;
   volume: number;
+  onPlayPause: () => void;
+  onSeek: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onVolumeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onNextTrack: () => void;
+  onPreviousTrack: () => void;
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({
+export function MusicPlayer({
   currentTrack,
   isPlaying,
-  handlePlayPause,
   currentTime,
   duration,
-  onSeek,
   volume,
-  onVolumeChange
-}) => {
-  const formatTime = (seconds: number) => {
-    if (isNaN(seconds)) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  onPlayPause,
+  onSeek,
+  onVolumeChange,
+  onNextTrack,
+  onPreviousTrack,
+}: MusicPlayerProps) {
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  if (!currentTrack) {
+    return null;
+  }
+
+  console.log(currentTrack)
+
   return (
-    <div className="h-20 bg-zinc-900 border-t border-zinc-800 px-4 flex items-center justify-between">
+    <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-4 flex items-center justify-between">
       <div className="flex items-center w-1/4">
-        <img src={currentTrack.cover} alt={currentTrack.title} className="h-14 w-14 rounded mr-3" />
+        <img src={currentTrack.cover} alt={currentTrack.title} className="w-12 h-12 rounded mr-3" />
         <div>
-          <div className="text-sm font-medium">{currentTrack.title}</div>
-          <div className="text-xs text-zinc-400">{currentTrack.artist}</div>
+          <div className="font-medium truncate">{currentTrack.title}</div>
+          <div className="text-sm text-zinc-400 truncate">{currentTrack.artist}</div>
         </div>
       </div>
 
       <div className="flex flex-col items-center w-2/4">
         <div className="flex items-center mb-2">
-          <button className="text-zinc-400 hover:text-white mx-2">
+          <Button variant="icon" size="sm" className="mx-2">
             <ShuffleIcon className="h-4 w-4" />
-          </button>
-          <button className="text-zinc-400 hover:text-white mx-2">
+          </Button>
+          <Button variant="icon" size="sm" className="mx-2" onClick={onPreviousTrack}>
             <SkipBackIcon className="h-5 w-5" />
-          </button>
-          <button className="bg-white text-black rounded-full p-2 mx-2 hover:scale-105" onClick={handlePlayPause}>
+          </Button>
+          <Button
+            variant="play"
+            size="sm"
+            onClick={onPlayPause}
+            className="mx-2"
+          >
             {isPlaying ? <PauseIcon className="h-5 w-5" /> : <PlayIcon className="h-5 w-5" />}
-          </button>
-          <button className="text-zinc-400 hover:text-white mx-2">
+          </Button>
+          <Button variant="icon" size="sm" className="mx-2" onClick={onNextTrack}>
             <SkipForwardIcon className="h-5 w-5" />
-          </button>
-          <button className="text-zinc-400 hover:text-white mx-2">
+          </Button>
+          <Button variant="icon" size="sm" className="mx-2">
             <Repeat2Icon className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
+
         <div className="flex items-center w-full">
           <span className="text-xs text-zinc-400 w-10">
             {formatTime(currentTime)}
@@ -89,7 +95,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         </div>
       </div>
 
-      {/* Volume Control */}
       <div className="flex items-center justify-end w-1/4">
         <VolumeIcon className="h-5 w-5 text-zinc-400 mr-2" />
         <input
@@ -108,5 +113,3 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     </div>
   );
 };
-
-export default MusicPlayer;

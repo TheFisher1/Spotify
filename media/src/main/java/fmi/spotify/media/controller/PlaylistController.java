@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fmi.spotify.media.model.Playlist;
+import fmi.spotify.media.model.PlaylistDTO;
+import fmi.spotify.media.model.SongDto;
 import fmi.spotify.media.service.PlaylistService;
 
 @RestController
@@ -22,11 +25,6 @@ public class PlaylistController {
 
     @Autowired
     private PlaylistService playlistService;
-
-    @GetMapping("/")
-    public ResponseEntity<List<Playlist>> getAllPlaylists() {
-        return ResponseEntity.ok(playlistService.getAllPlaylists());
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Playlist> getPlaylistById(@PathVariable Long id) {
@@ -40,9 +38,9 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.createPlaylist(playlist));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long id, @RequestBody Playlist playlist) {
-        return playlistService.updatePlaylist(id, playlist)
+    @PutMapping("/{playlistId}")
+    public ResponseEntity<Playlist> updatePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist) {
+        return playlistService.updatePlaylist(playlistId, playlist)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -51,6 +49,11 @@ public class PlaylistController {
     public ResponseEntity<Void> deletePlaylist(@PathVariable Long id) {
         playlistService.deletePlaylist(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{playlistId}/songs")
+    public ResponseEntity<List<SongDto>> getSongsInPlaylist(@PathVariable Long playlistId) {
+        return ResponseEntity.ok(playlistService.getSongsInPlaylist(playlistId));
     }
 
     @PostMapping("/{playlistId}/songs/{songId}")
@@ -66,7 +69,16 @@ public class PlaylistController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Playlist>> getPlaylistsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(playlistService.getPlaylistsByUserId(userId));
+    public ResponseEntity<List<PlaylistDTO>> getPlaylistsByUserId(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        var playlistsPage = playlistService
+                .getPlaylistsByUserId(userId, page, size).stream()
+                .map(PlaylistDTO::fromPlaylist)
+                .toList();
+
+        return ResponseEntity.ok(playlistsPage);
     }
 }
