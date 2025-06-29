@@ -15,8 +15,8 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 }) => {
     const [formData, setFormData] = useState({
         username: '',
-        password: '',
-        email: ''
+        email: '',
+        password: ''
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
         try {
             await register(formData);
             onClose();
-            setFormData({ username: '', password: '', email: '' });
+            setFormData({ username: '', email: '', password: '' });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Registration failed. Please try again.');
         } finally {
@@ -48,7 +48,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 
     const handleClose = () => {
         onClose();
-        setFormData({ username: '', password: '', email: '' });
+        setFormData({ username: '', email: '', password: '' });
         setError('');
     };
 
@@ -57,7 +57,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-zinc-900 p-8 rounded-lg w-full max-w-md">
-                <h2 className="text-2xl text-white font-bold mb-6">Sign Up</h2>
+                <h2 className="text-2xl font-bold mb-6">Sign Up</h2>
 
                 {error && (
                     <div className="bg-red-500 text-white p-3 rounded mb-4">
@@ -67,7 +67,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-2 text-white">Username</label>
+                        <label className="block text-sm font-medium mb-2">Username</label>
                         <input
                             type="text"
                             name="username"
@@ -79,7 +79,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2 text-white">Email</label>
+                        <label className="block text-sm font-medium mb-2">Email</label>
                         <input
                             type="email"
                             name="email"
@@ -91,7 +91,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2 text-white">Password</label>
+                        <label className="block text-sm font-medium mb-2">Password</label>
                         <input
                             type="password"
                             name="password"
@@ -107,7 +107,7 @@ export const RegisterModal: React.FC<RegisterModalProps> = ({
                             type="submit"
                             variant="primary"
                             loading={loading}
-                            className="flex-1 text-white"
+                            className="flex-1"
                         >
                             Sign Up
                         </Button>
