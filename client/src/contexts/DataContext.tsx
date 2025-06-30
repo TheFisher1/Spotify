@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { Song, Playlist, Album, Artist } from '../types';
 import { mediaService } from '../services/mediaService';
 import { artistService } from '../services/artistService';
@@ -57,6 +57,7 @@ interface DataProviderProps {
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     const { user } = useAuth();
+    const hasLoadedRef = useRef(false);
 
     const [songs, setSongs] = useState<Song[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -215,11 +216,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
 
     useEffect(() => {
-        if (user) {
+        if (user && !hasLoadedRef.current) {
             fetchSongs();
             fetchPlaylists();
             fetchAlbums();
             fetchArtists();
+            hasLoadedRef.current = true;
         }
     }, [user]);
 
