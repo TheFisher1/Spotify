@@ -74,3 +74,14 @@ INSERT INTO song_genres (song_id, genre_id) VALUES
 INSERT INTO playlist (name, description, is_public) VALUES ('Home Workout', 'Chill songs', true), ('Techno', 'Techno songs', true), ('Pop', 'Pop songs', true);
 
 INSERT INTO playlist_songs (playlist_id, song_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10), (2, 11), (2, 12), (2, 13), (2, 14), (2, 15), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8), (3, 9), (3, 10), (3, 11), (3, 12), (3, 13), (3, 14), (3, 15);
+
+ALTER TABLE song ADD COLUMN IF NOT EXISTS search_vector tsvector;
+
+UPDATE song s
+SET search_vector = to_tsvector('english',
+  coalesce(s.title, '') || ' ' ||
+  coalesce((SELECT name FROM artist WHERE id = s.artist_id), '') || ' ' ||
+  coalesce((SELECT name FROM albums WHERE id = s.album_id), '')
+);
+
+CREATE INDEX IF NOT EXISTS song_search_vector_idx ON song USING GIN(search_vector);

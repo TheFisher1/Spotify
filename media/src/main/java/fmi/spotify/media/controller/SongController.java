@@ -41,4 +41,10 @@ public class SongController {
         }
         return ResponseEntity.ok(songs);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<SongDto>> getSongsBySearchQuery(@RequestParam String q) {
+        List<SongDto> songs = songService.getSongsDtoBySearchQuery(q);
+        return ResponseEntity.ok(songs);
+    }
 }

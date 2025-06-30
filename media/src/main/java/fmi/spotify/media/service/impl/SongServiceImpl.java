@@ -54,4 +54,16 @@ public class SongServiceImpl implements SongService {
                 .map(SongDto::fromSong)
                 .collect(Collectors.toList());
     }
+
+    private List<Song> getSongsBySearchQuery(String query) {
+        return songRepository.searchByFullText(query);
+    }
+
+    public List<SongDto> getSongsDtoBySearchQuery(String query) {
+        List<Song> songs = getSongsBySearchQuery(query);
+        return songs.stream()
+            .map(SongDto::fromSong)
+            .collect(Collectors.toList());
+    }
+
 }

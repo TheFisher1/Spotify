@@ -16,4 +16,7 @@ public interface SongService {
     List<Song> getSongsByArtistId(Long artistId);
 
     List<SongDto> getSongsDtoByArtistId(Long artistId);
+
+    List<SongDto> getSongsDtoBySearchQuery(String query);
+
 }
