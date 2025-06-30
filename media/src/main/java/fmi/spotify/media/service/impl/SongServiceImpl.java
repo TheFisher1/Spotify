@@ -59,6 +59,7 @@ public class SongServiceImpl implements SongService {
         return songRepository.searchByFullText(query);
     }
 
+    @Override
     public List<SongDto> getSongsDtoBySearchQuery(String query) {
         List<Song> songs = getSongsBySearchQuery(query);
         return songs.stream()

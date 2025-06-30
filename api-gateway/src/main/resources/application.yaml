@@ -36,7 +36,7 @@ spring:
         - id: actions-service
           uri: ${ACTIONS_SERVICE_URL}
           predicates:
-            - Path=/actions/**
+            - Path=/likes/**, /follows/**
         - id: recommendation-service
           uri: ${RECOMMENDATIONS_SERVICE_URL}
           predicates:
