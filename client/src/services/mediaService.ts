@@ -109,4 +109,9 @@ export const mediaService = {
     async removeSongFromPlaylist(playlistId: number, songId: number): Promise<void> {
         await api.delete(`/media/playlists/${playlistId}/songs/${songId}`);
     }
+
+    async getSongsBySearchQuery(q: string): Promise<Song[]> {
+        const response = await api.get(`media/songs/search?q=${encodeURIComponent(q)}`);
+        return response.data;
+    }
 }; 

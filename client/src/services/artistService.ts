@@ -24,10 +24,5 @@ export const artistService = {
 
     async deleteArtist(id: number): Promise<void> {
         await api.delete(`/artists/${id}`);
-    },
-
-    async searchArtists(query: string): Promise<Artist[]> {
-        const response = await api.get<Artist[]>(`/artists/search?query=${encodeURIComponent(query)}`);
-        return response.data;
     }
 }; 

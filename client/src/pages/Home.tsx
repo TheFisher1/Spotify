@@ -2,6 +2,7 @@ import React from 'react';
 import { Playlist, Song } from '../types';
 import { PlaylistCollection } from '../components/PlaylistCollection';
 import { SongCollection } from '../components/SongCollection';
+import { LogoutButton } from '../components/LogoutButton'
 
 interface HomeProps {
   songs: Song[];

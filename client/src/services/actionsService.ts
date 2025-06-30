@@ -1,28 +1,29 @@
 import api from './api';
 import { Like } from '../types';
+import { Song } from '../types'
 
 export const actionsService = {
 
-    async likeSong(userId: number, songId: number): Promise<Like> {
-        const response = await api.post<Like>('/actions/likes', { userId, songId });
-        return response.data;
-    },
+    async likeSong(userId: number, songId: number): Promise<void> {
+      await api.post(`/likes/user/${userId}/song/${songId}`);
+    }
 
     async unlikeSong(userId: number, songId: number): Promise<void> {
-        await api.delete(`/actions/likes?userId=${userId}&songId=${songId}`);
+        await api.delete(`/likes/user/${userId}/song/${songId}`);
     },
 
-    async getUserLikes(userId: number): Promise<Like[]> {
-        const response = await api.get<Like[]>(`/actions/likes/user/${userId}`);
+    async getUserLikes(userId: number): Promise<Song[]> {
+        const response = await api.get<Song[]>(`/likes/user/${userId}/songs`);
         return response.data;
     },
 
+    async getLikesCount(songId : number) : Promise<number> {
+        const response = await api.get<number>(`/likes/count/song/${songId}`);
+        return response.data;
+    }
+
     async isSongLiked(userId: number, songId: number): Promise<boolean> {
-        try {
-            await api.get(`/actions/likes/check?userId=${userId}&songId=${songId}`);
-            return true;
-        } catch {
-            return false;
-        }
+        const response = await api.get<boolean>(`/likes/check/user/${userId}/song/${songId}`);
+        return response.data;
     }
 }; 
