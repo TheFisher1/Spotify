@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,11 +65,11 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public List<String> getRecommendedSongs(Long userId, int count) {
+    public List<Integer> getRecommendedSongs(Long userId, int count) {
         try {
             RecommendationResponse response = recombeeClient.send(
                     new RecommendItemsToUser("" + userId, count));
-            return Arrays.asList(response.getIds());
+            return Arrays.asList(response.getIds()).stream().map(id -> Integer.parseInt(id)).collect(Collectors.toList());
         } catch (ApiException e) {
             log.error("Recombee exception occurred when requesting recommendations", e);
             return Collections.emptyList();

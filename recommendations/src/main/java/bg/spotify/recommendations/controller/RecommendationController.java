@@ -18,7 +18,7 @@ public class RecommendationController {
     private RecommendationService recommendationService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<String>> getRecommendations(@PathVariable Long userId,
+    public ResponseEntity<List<Integer>> getRecommendations(@PathVariable Long userId,
             @RequestParam(defaultValue = "3") int count) {
         return ResponseEntity.ok(recommendationService.getRecommendedSongs(userId, count));
     }

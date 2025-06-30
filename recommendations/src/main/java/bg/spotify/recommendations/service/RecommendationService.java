@@ -10,7 +10,7 @@ public interface RecommendationService {
 
     void addNewSong(Long songId, String title, String artist, String album, String genre);
 
-    List<String> getRecommendedSongs(Long userId, int count);
+    List<Integer> getRecommendedSongs(Long userId, int count);
 
     void addBookmark(Long userId, Long songId);
 
