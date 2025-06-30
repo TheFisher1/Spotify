@@ -37,6 +37,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
     }
 
+    @Override
     public void recordSongPlay(Long userId, Long songId) {
         try {
             recombeeClient.send(new AddPurchase("" + userId, "" + songId));
@@ -45,6 +46,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
     }
 
+    @Override
     public void addNewSong(Long songId, String title, String artist, String album, String genre) {
         try {
             Map<String, Object> values = new HashMap<>();
@@ -61,6 +63,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         }
     }
 
+    @Override
     public List<String> getRecommendedSongs(Long userId, int count) {
         try {
             RecommendationResponse response = recombeeClient.send(
@@ -111,9 +114,33 @@ public class RecommendationServiceImpl implements RecommendationService {
             recombeeClient.send(new SetUserValues(userId + "", values)
                     .setCascadeCreate(true));
         } catch (ApiException e) {
-            log.error("Recombee exception when trying to add new user ", e);
+            log.error("Recombee exception when trying to add new user", e);
         }
     }
 
-    // TODO : Update user, update song
+    @Override
+    public void updateUser(Long userId, String username, Integer age, String gender, String country) {
+        try {
+            Map<String, Object> values = new HashMap<>();
+            values.put("name", username != null ? username : "");
+
+            if (age != null) {
+                values.put("age", age);
+            }
+
+            if (gender != null) {
+                values.put("gender", gender);
+            }
+
+            if (country != null) {
+                values.put("country", country);
+            }
+            recombeeClient.send(new SetUserValues("" + userId, values)
+                .setCascadeCreate(true)
+            );
+
+        } catch (ApiException e) {
+            log.error("Recombee exception when trying to update a user", e);
+        }
+    }
 }

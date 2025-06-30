@@ -3,7 +3,6 @@ package fmi.spotify.media.model;
 import bg.spotify.artist.model.Artist;
 import lombok.Data;
 
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -25,7 +24,6 @@ public class SongDto {
     private static final String IMAGE_EXTENSION = ".jpg";
     private static final String AUDIO_EXTENSION = ".mp3";
     private static final String AUDIO_URL = "https://res.cloudinary.com/dbsilwgqs/video/upload/";
-
 
     private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";
     private static final String DEFAULT_AUDIO_URL = "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3";

@@ -38,6 +38,13 @@ public class UserServiceImpl implements UserService {
         existingUser.setUsername(user.getUsername());
         existingUser.setEmail(user.getEmail());
         existingUser.setPassword(user.getPassword());
+        existingUser.setAge(user.getAge());
+        existingUser.setCountry(user.getCountry());
+        existingUser.setGender(user.getGender());
+
+        recommendaionService.updateUser(id, existingUser.getUsername(), existingUser.getAge(),
+            existingUser.getGender(), existingUser.getCountry());
+
         return userRepository.save(existingUser);
     }
 
