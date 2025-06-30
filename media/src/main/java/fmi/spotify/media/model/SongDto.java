@@ -25,9 +25,6 @@ public class SongDto {
     private static final String AUDIO_EXTENSION = ".mp3";
     private static final String AUDIO_URL = "https://res.cloudinary.com/dbsilwgqs/video/upload/";
 
-    private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";
-    private static final String DEFAULT_AUDIO_URL = "https://spotifyfmi.blob.core.windows.net/songs/avicii-hey-brother.mp3";
-
     public static SongDto fromSong(Song song) {
         SongDto dto = new SongDto();
         Album album = song.getAlbum();
@@ -36,7 +33,7 @@ public class SongDto {
         dto.setTitle(title);
         dto.setDuration(song.getDuration());
         dto.setThumbnail(IMAGE_URL + URLEncoder.encode(album.getName(), StandardCharsets.UTF_8)
-            .replace("+", "%20") + IMAGE_EXTENSION);
+                .replace("+", "%20") + IMAGE_EXTENSION);
         dto.setUrl(AUDIO_URL + URLEncoder.encode(title, StandardCharsets.UTF_8).replace("+", "%20") + AUDIO_EXTENSION);
         dto.setAlbum(album);
         dto.setArtist(song.getArtist());
