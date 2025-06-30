@@ -19,4 +19,5 @@ public interface SongService {
 
     List<SongDto> getSongsDtoBySearchQuery(String query);
 
+    SongDto getRandomSongDto();
 }

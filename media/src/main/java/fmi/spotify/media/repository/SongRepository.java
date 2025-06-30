@@ -11,12 +11,16 @@ import fmi.spotify.media.model.Song;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, Long> {
-    List<Song> findByTitleContainingIgnoreCaseOrArtist_NameContainingIgnoreCase(String title, String artistName);
-    List<Song> findByArtist_Id(Long artistId);
+
+    @Query("SELECT s FROM Song s WHERE s.artist.id = :artistId")
+    List<Song> findSongsByArtistId(@Param("artistId") Long artistId);
 
     @Query(value = """
-        SELECT * FROM song
-        WHERE search_vector @@ plainto_tsquery('english', :query)
-    """, nativeQuery = true)
+                SELECT * FROM song
+                WHERE search_vector @@ plainto_tsquery('english', :query)
+            """, nativeQuery = true)
     List<Song> searchByFullText(@Param("query") String query);
+
+    @Query("SELECT s FROM Song s ORDER BY RANDOM() LIMIT 1")
+    Song findRandomSong();
 }
