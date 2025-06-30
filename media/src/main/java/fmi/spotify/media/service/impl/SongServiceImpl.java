@@ -44,7 +44,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public List<Song> getSongsByArtistId(Long artistId) {
-        return songRepository.findByArtist_Id(artistId);
+        return songRepository.findSongsByArtistId(artistId);
     }
 
     @Override
@@ -62,8 +62,13 @@ public class SongServiceImpl implements SongService {
     public List<SongDto> getSongsDtoBySearchQuery(String query) {
         List<Song> songs = getSongsBySearchQuery(query);
         return songs.stream()
-            .map(SongDto::fromSong)
-            .collect(Collectors.toList());
+                .map(SongDto::fromSong)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SongDto getRandomSongDto() {
+        return SongDto.fromSong(songRepository.findRandomSong());
     }
 
 }

@@ -47,4 +47,9 @@ public class SongController {
         List<SongDto> songs = songService.getSongsDtoBySearchQuery(q);
         return ResponseEntity.ok(songs);
     }
+
+    @GetMapping("/random")
+    public ResponseEntity<SongDto> getRandomSong() {
+        return ResponseEntity.ok(songService.getRandomSongDto());
+    }
 }

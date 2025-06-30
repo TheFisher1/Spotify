@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HomeIcon, SearchIcon, PlusSquareIcon, HeartIcon } from 'lucide-react';
+import { HomeIcon, SearchIcon } from 'lucide-react';
 import Button from "./Button";
 
 export function Sidebar() {
@@ -50,18 +50,6 @@ export function Sidebar() {
         </ul>
       </nav>
       <div className="space-y-3 mb-6">
-        <Button
-          variant="sidebar"
-          icon={PlusSquareIcon}
-        >
-          Create Playlist
-        </Button>
-        <Button
-          variant="sidebar"
-          icon={HeartIcon}
-        >
-          Liked Songs
-        </Button>
       </div>
     </div>
   );

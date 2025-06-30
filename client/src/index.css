@@ -2,7 +2,6 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom slider styles */
 .slider::-webkit-slider-thumb {
     appearance: none;
     height: 12px;
@@ -31,7 +30,6 @@
     background: transparent;
 }
 
-/* Hide default slider appearance */
 .slider {
     -webkit-appearance: none;
     appearance: none;
