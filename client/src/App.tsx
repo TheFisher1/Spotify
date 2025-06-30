@@ -6,6 +6,7 @@ import { Sidebar } from './components/Sidebar';
 import { MusicPlayer } from './components/MusicPlayer';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
+import { Search } from './pages/Search';
 import { Track, Playlist, formatDuration } from './types';
 
 export function AppContent() {
@@ -209,6 +210,15 @@ export function AppContent() {
                   onPlaylistSelect={handlePlaylistSelect}
                   onLoadMoreSongs={loadMoreSongs}
                   onLoadMorePlaylists={loadMorePlaylists}
+                />
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <Search
+                  setCurrentTrack={handleTrackSelect}
+                  handlePlayPause={togglePlayPause}
                 />
               }
             />

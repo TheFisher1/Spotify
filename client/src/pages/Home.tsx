@@ -1,8 +1,8 @@
-import React from 'react';
 import { Playlist, Song } from '../types';
 import { PlaylistCollection } from '../components/PlaylistCollection';
 import { SongCollection } from '../components/SongCollection';
-import { LogoutButton } from '../components/LogoutButton'
+import Button from '../Button';
+import { useAuth } from '../contexts/AuthContext';
 
 interface HomeProps {
   songs: Song[];
@@ -34,7 +34,7 @@ interface HomeProps {
   onLoadMorePlaylists: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({
+export function Home({
   songs,
   playlists,
   loading,
@@ -45,7 +45,7 @@ const Home: React.FC<HomeProps> = ({
   onPlaylistSelect,
   onLoadMoreSongs,
   onLoadMorePlaylists
-}) => {
+}: HomeProps) {
   if (loading.songs || loading.playlists) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -53,6 +53,8 @@ const Home: React.FC<HomeProps> = ({
       </div>
     );
   }
+
+  const { logout } = useAuth();
 
   if (error.songs || error.playlists) {
     return (
@@ -66,7 +68,10 @@ const Home: React.FC<HomeProps> = ({
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold mb-6">Good afternoon</h1>
+      <div className='flex flex-row justify-between items-center'>
+        <h1 className="text-3xl font-bold">Good afternoon</h1>
+        <Button variant='secondary' onClick={logout}>Log Out</Button>
+      </div>
 
       <section>
         <div className="flex items-center justify-between mb-4">

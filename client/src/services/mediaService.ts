@@ -111,7 +111,7 @@ export const mediaService = {
     },
 
     async getSongsBySearchQuery(q: string): Promise<Song[]> {
-        const response = await api.get(`media/songs/search?q=${encodeURIComponent(q)}`);
+        const response = await api.get(`media/songs/search?q=${q}`);
         return response.data;
-    }
+    },
 }; 

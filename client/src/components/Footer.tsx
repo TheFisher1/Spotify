@@ -62,7 +62,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-zinc-800 text-zinc-400 text-sm">
-          <p>&copy; 2023 Spotify Clone. For demo purposes only.</p>
+          <p>&copy;Kaloyan & Kaloyan Inc.</p>
         </div>
       </div>
     </footer>
