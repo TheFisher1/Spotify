@@ -21,13 +21,10 @@ public class SongDto {
     private Artist artist;
     private Set<String> genres;
 
-    @Value("${cloudinary.cloud-name}")
-    private static String cloudName;
-
-    private static final String IMAGE_URL = "https://res.cloudinary.com/" + cloudName + "/image/upload/";
+    private static final String IMAGE_URL = "https://res.cloudinary.com/dbsilwgqs/image/upload/";
     private static final String IMAGE_EXTENSION = ".jpg";
     private static final String AUDIO_EXTENSION = ".mp3";
-    private static final String AUDIO_URL = "https://res.cloudinary.com/" + cloudName + "/video/upload/";
+    private static final String AUDIO_URL = "https://res.cloudinary.com/dbsilwgqs/video/upload/";
 
 
     private static final String DEFAULT_SONG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIrx_eYu5bcjKMz1ByHVZ6Uy5z1in4cDGWAA&s";

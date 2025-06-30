@@ -34,8 +34,8 @@ INSERT INTO albums (name, artist_id, release_date, genre) VALUES
 ('Mercury - Act 2', 8, '2022-07-01', 'Alternative Rock'),
 ('Electronic Vibes', 9, '2020-01-01', 'Electronic'),
 ('Love + War', 10, '2015-09-11', 'R&B'),
-('Death of a Bachelor', 11, '2016-01-15', 'Pop Rock');
-('Origins', 8, '2018-11-09', 'Alternative Rock')
+('Death of a Bachelor', 11, '2016-01-15', 'Pop Rock'),
+('Origins', 8, '2018-11-09', 'Alternative Rock');
 
 INSERT INTO song (title, duration, album_id, artist_id) VALUES
 ('Hey Brother', 255, 1, 1),

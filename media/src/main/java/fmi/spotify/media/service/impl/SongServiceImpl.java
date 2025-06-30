@@ -30,7 +30,7 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Optional<Song> getSongById(Long userId, Long songId) {
-        recommendationService.recordSongClick(userId, songId);
+        recommendationService.recordSongPlay(userId, songId);
         return songRepository.findById(songId);
     }
 
