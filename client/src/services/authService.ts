@@ -14,11 +14,6 @@ export const authService = {
         return response.data;
     },
 
-    async getCurrentUser(): Promise<User> {
-        const response = await api.get<User>('/auth/me');
-        return response.data;
-    },
-
     logout(): void {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
