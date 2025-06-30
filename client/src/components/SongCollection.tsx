@@ -4,10 +4,9 @@ import { SongCard } from "./SongCard";
 interface SongCollectionProps {
     songs: Song[];
     setCurrentTrack: (track: any) => void;
-    handlePlayPause: () => void;
 }
 
-export function SongCollection({ songs, setCurrentTrack, handlePlayPause }: SongCollectionProps) {
+export function SongCollection({ songs, setCurrentTrack }: SongCollectionProps) {
     return (
         <div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -16,7 +15,6 @@ export function SongCollection({ songs, setCurrentTrack, handlePlayPause }: Song
                         key={song.id}
                         song={song}
                         setCurrentTrack={setCurrentTrack}
-                        handlePlayPause={handlePlayPause}
                     />
                 ))}
             </div>

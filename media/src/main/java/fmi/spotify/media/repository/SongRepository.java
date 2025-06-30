@@ -20,4 +20,7 @@ public interface SongRepository extends JpaRepository<Song, Long> {
                 WHERE search_vector @@ plainto_tsquery('english', :query)
             """, nativeQuery = true)
     List<Song> searchByFullText(@Param("query") String query);
+
+    @Query("SELECT s FROM Song s ORDER BY RANDOM() LIMIT 1")
+    Song findRandomSong();
 }

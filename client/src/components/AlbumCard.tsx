@@ -8,7 +8,6 @@ interface AlbumProps {
   cover: string;
   year: string;
   setCurrentTrack: (track: any) => void;
-  handlePlayPause: () => void;
 }
 
 export function AlbumCard({
@@ -16,8 +15,7 @@ export function AlbumCard({
   artist,
   cover,
   year,
-  setCurrentTrack,
-  handlePlayPause
+  setCurrentTrack
 }: AlbumProps) {
   const handlePlay = () => {
     setCurrentTrack({
@@ -28,7 +26,6 @@ export function AlbumCard({
       duration: '3:45',
       cover: cover
     });
-    handlePlayPause();
   };
 
   return <div className="bg-zinc-900 p-4 rounded-lg hover:bg-zinc-800 transition-colors group relative">

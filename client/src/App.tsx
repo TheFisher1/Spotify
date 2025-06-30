@@ -1,187 +1,148 @@
-import React, { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { DataProvider, useData } from './contexts/DataContext';
 import { Sidebar } from './components/Sidebar';
 import { MusicPlayer } from './components/MusicPlayer';
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
 import { Search } from './pages/Search';
-import { Track, Playlist, formatDuration } from './types';
+import { Track, Playlist, Song, formatDuration } from './types';
+import { mediaService } from './services/mediaService';
 
 export function AppContent() {
-  const { isAuthenticated } = useAuth();
-  const { songs, playlists, loading, error, pagination, loadMoreSongs, loadMorePlaylists } = useData();
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const { isAuthenticated, user } = useAuth();
 
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | null>(null);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.8);
+  const [allSongs, setAllSongs] = useState<Song[]>([]);
 
-  const playTrack = async (track: Track) => {
-    if (!audioRef.current) return;
-
-    try {
-      setCurrentTrack(track);
-      setIsPlaying(false);
-      setCurrentTime(0);
-
-      audioRef.current.src = track.audioUrl || track.cover || '';
-      audioRef.current.load();
-
-      await audioRef.current.play();
-      setIsPlaying(true);
-    } catch (error) {
-      console.error('Error playing track:', error);
+  useEffect(() => {
+    if (user) {
+      const fetchAllSongs = async () => {
+        try {
+          const songs = await mediaService.getSongs({ pageSize: 5, pageNumber: 0 });
+          setAllSongs(Array.isArray(songs) ? songs : []);
+        } catch (error) {
+          console.error('Error fetching all songs:', error);
+        }
+      };
+      fetchAllSongs();
     }
-  };
+  }, [user]);
 
-  const playSongFromPlaylist = async (playlist: Playlist, songIndex: number) => {
-    if (!playlist.songs || songIndex >= playlist.songs.length) return;
-
-    const song = playlist.songs[songIndex];
-    const track: Track = {
-      id: song.id?.toString() || '1',
-      title: song.title,
-      artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
-      album: typeof song.album === 'string' ? song.album : song.album?.name || playlist.name,
-      duration: formatDuration(song.duration),
-      cover: song.thumbnail || playlist.coverUrl || '',
-      audioUrl: song.url
-    };
-
-    setCurrentPlaylist(playlist);
-    setCurrentSongIndex(songIndex);
-    await playTrack(track);
-  };
-
-  const playSongFromAllSongs = async (songIndex: number) => {
-    if (songIndex < 0 || songIndex >= songs.length) return;
-
-    const song = songs[songIndex];
-    const track: Track = {
-      id: song.id?.toString() || '1',
-      title: song.title,
-      artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
-      album: typeof song.album === 'string' ? song.album : song.album?.name || 'Unknown Album',
-      duration: formatDuration(song.duration),
-      cover: song.thumbnail || '',
-      audioUrl: song.url
-    };
-
+  const handleTrackSelect = (track: Track) => {
     setCurrentPlaylist(null);
-    setCurrentSongIndex(songIndex);
-    await playTrack(track);
+    const songIndex = allSongs.findIndex(song =>
+      song.id?.toString() === track.id || song.title === track.title
+    );
+    setCurrentSongIndex(songIndex >= 0 ? songIndex : 0);
+    setCurrentTrack(track);
   };
 
-  const pauseTrack = () => {
-    if (audioRef.current && isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
+  const handlePlaylistSelect = async (playlist: Playlist) => {
+    const playlistWithSongs = await mediaService.getPlaylistWithSongs(playlist.id);
+    setCurrentPlaylist(playlistWithSongs);
+    setCurrentSongIndex(0);
 
-  const resumeTrack = async () => {
-    if (audioRef.current && !isPlaying) {
-      try {
-        await audioRef.current.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Error resuming track:', error);
-      }
-    }
-  };
-
-  const togglePlayPause = async () => {
-    if (isPlaying) {
-      pauseTrack();
-    } else {
-      await resumeTrack();
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
-  };
-
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setDuration(audioRef.current.duration);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = parseFloat(e.target.value);
-    setCurrentTime(time);
-    if (audioRef.current) {
-      audioRef.current.currentTime = time;
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
+    if (playlistWithSongs.songs && playlistWithSongs.songs.length > 0) {
+      const song = playlistWithSongs.songs[0];
+      const track: Track = {
+        id: song.id?.toString() || '1',
+        title: song.title,
+        artist: song.artist!.name,
+        album: song.album!.name,
+        duration: formatDuration(song.duration),
+        cover: song.thumbnail || playlistWithSongs.coverUrl || '',
+        audioUrl: song.url
+      };
+      setCurrentTrack(track);
     }
   };
 
   const handleTrackEnd = () => {
-    setIsPlaying(false);
-    setCurrentTime(0);
+    handleNextTrack();
+  };
 
+  const handleNextTrack = () => {
     if (currentPlaylist && currentPlaylist.songs) {
       const nextIndex = currentSongIndex + 1;
       if (nextIndex < currentPlaylist.songs.length) {
-        playSongFromPlaylist(currentPlaylist, nextIndex);
+        setCurrentSongIndex(nextIndex);
+        const song = currentPlaylist.songs[nextIndex];
+        const track = {
+          id: song.id?.toString() || '1',
+          title: song.title,
+          artist: song.artist!.name,
+          album: song.album!.name,
+          duration: formatDuration(song.duration),
+          cover: song.thumbnail || currentPlaylist.coverUrl || '',
+          audioUrl: song.url
+        };
+        setCurrentTrack(track);
       }
-    }
-  };
+    } else if (allSongs.length > 0) {
 
-  const handleAudioError = () => {
-    setIsPlaying(false);
-  };
-
-  const handleTrackSelect = (track: Track) => {
-    setCurrentPlaylist(null);
-    setCurrentSongIndex(0);
-    playTrack(track);
-  };
-
-  const handlePlaylistSelect = (playlist: Playlist) => {
-    playSongFromPlaylist(playlist, 0);
-  };
-
-  const onNextTrack = () => {
-    if (currentPlaylist && currentPlaylist.songs) {
       const nextIndex = currentSongIndex + 1;
-      if (nextIndex < currentPlaylist.songs.length) {
-        playSongFromPlaylist(currentPlaylist, nextIndex);
+      if (nextIndex < allSongs.length) {
+        setCurrentSongIndex(nextIndex);
+        const song = allSongs[nextIndex];
+        const track = {
+          id: song.id!.toString(),
+          title: song.title,
+          artist: song.artist!.name,
+          album: song.album!.name,
+          duration: formatDuration(song.duration),
+          cover: song.thumbnail || '',
+          audioUrl: song.url
+        };
+        setCurrentTrack(track);
+      } else {
+        mediaService.getRandomSong().then(song => setCurrentTrack({
+          id: song.id!.toString(), title: song.title,
+          artist: song.artist!.name,
+          album: song.album!.name,
+          duration: formatDuration(song.duration),
+          cover: song.thumbnail || '',
+          audioUrl: song.url
+        }))
       }
-    } else if (songs.length > 0) {
-      const nextIndex = currentSongIndex + 1;
-      if (nextIndex < songs.length) {
-        playSongFromAllSongs(nextIndex);
-      }
-    }
-  };
+    };
 
-  const onPreviousTrack = () => {
+  }
+  const handlePreviousTrack = () => {
     if (currentPlaylist && currentPlaylist.songs) {
       const prevIndex = currentSongIndex - 1;
       if (prevIndex >= 0) {
-        playSongFromPlaylist(currentPlaylist, prevIndex);
+        setCurrentSongIndex(prevIndex);
+        const song = currentPlaylist.songs[prevIndex];
+        const track: Track = {
+          id: song.id?.toString() || '1',
+          title: song.title,
+          artist: song.artist!.name,
+          album: song.album!.name,
+          duration: formatDuration(song.duration),
+          cover: song.thumbnail || currentPlaylist.coverUrl || '',
+          audioUrl: song.url
+        };
+        setCurrentTrack(track);
       }
-    } else if (songs.length > 0) {
+    } else if (allSongs.length > 0) {
+
       const prevIndex = currentSongIndex - 1;
       if (prevIndex >= 0) {
-        playSongFromAllSongs(prevIndex);
+        setCurrentSongIndex(prevIndex);
+        const song = allSongs[prevIndex];
+        const track: Track = {
+          id: song.id?.toString() || '1',
+          title: song.title,
+          artist: song.artist!.name,
+          album: song.album!.name,
+          duration: formatDuration(song.duration),
+          cover: song.thumbnail || '',
+          audioUrl: song.url
+        };
+        setCurrentTrack(track);
       }
     }
   };
@@ -200,16 +161,8 @@ export function AppContent() {
               path="/home"
               element={
                 <Home
-                  songs={songs}
-                  playlists={playlists}
-                  loading={loading}
-                  error={error}
-                  pagination={pagination}
                   setCurrentTrack={handleTrackSelect}
-                  handlePlayPause={togglePlayPause}
                   onPlaylistSelect={handlePlaylistSelect}
-                  onLoadMoreSongs={loadMoreSongs}
-                  onLoadMorePlaylists={loadMorePlaylists}
                 />
               }
             />
@@ -218,7 +171,6 @@ export function AppContent() {
               element={
                 <Search
                   setCurrentTrack={handleTrackSelect}
-                  handlePlayPause={togglePlayPause}
                 />
               }
             />
@@ -229,24 +181,11 @@ export function AppContent() {
 
       <MusicPlayer
         currentTrack={currentTrack}
-        isPlaying={isPlaying}
-        onPlayPause={togglePlayPause}
-        currentTime={currentTime}
-        duration={duration}
-        onSeek={handleSeek}
-        volume={volume}
-        onVolumeChange={handleVolumeChange}
-        onNextTrack={onNextTrack}
-        onPreviousTrack={onPreviousTrack}
-      />
-
-      <audio
-        ref={audioRef}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleTrackEnd}
-        onError={handleAudioError}
-        preload="metadata"
+        currentPlaylist={currentPlaylist}
+        currentSongIndex={currentSongIndex}
+        onTrackEnd={handleTrackEnd}
+        onNextTrack={handleNextTrack}
+        onPreviousTrack={handlePreviousTrack}
       />
     </div>
   );
@@ -256,9 +195,7 @@ export function App() {
   return (
     <Router>
       <AuthProvider>
-        <DataProvider>
-          <AppContent />
-        </DataProvider>
+        <AppContent />
       </AuthProvider>
     </Router>
   );

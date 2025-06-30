@@ -71,8 +71,7 @@ export const mediaService = {
     },
 
     async getSongsInPlaylist(playlistId: string): Promise<Song[]> {
-        const response = await api.get<Song[]>(`/media/playlists/${playlistId}/songs`);
-        return response.data;
+        return api.get<Song[]>(`/media/playlists/${playlistId}/songs`).then(response => response.data);
     },
 
     async getUserPlaylists(userId: number, page: number = 0, size: number = 10): Promise<{
@@ -84,34 +83,39 @@ export const mediaService = {
         hasNext: boolean;
         hasPrevious: boolean;
     }> {
-        const response = await api.get(`/media/playlists/user/${userId}?page=${page}&size=${size}`);
-        return response.data;
+        return api.get(`/media/playlists/user/${userId}?page=${page}&size=${size}`)
+            .then(response => response.data)
     },
 
     async createPlaylist(playlist: Playlist): Promise<Playlist> {
-        const response = await api.post<Playlist>('/media/playlists', playlist);
-        return response.data;
+        return api.post<Playlist>('/media/playlists', playlist)
+            .then(response => response.data);
     },
 
     async updatePlaylist(id: number, playlist: Playlist): Promise<Playlist> {
-        const response = await api.put<Playlist>(`/media/playlists/${id}`, playlist);
-        return response.data;
+        return api.put<Playlist>(`/media/playlists/${id}`, playlist)
+            .then(response => response.data);
     },
 
     async deletePlaylist(id: number): Promise<void> {
-        await api.delete(`/media/playlists/${id}`);
+        return api.delete(`/media/playlists/${id}`);
     },
 
     async addSongToPlaylist(playlistId: number, songId: number): Promise<void> {
-        await api.post(`/media/playlists/${playlistId}/songs/${songId}`);
+        return api.post(`/media/playlists/${playlistId}/songs/${songId}`);
     },
 
     async removeSongFromPlaylist(playlistId: number, songId: number): Promise<void> {
-        await api.delete(`/media/playlists/${playlistId}/songs/${songId}`);
+        return api.delete(`/media/playlists/${playlistId}/songs/${songId}`);
     },
 
     async getSongsBySearchQuery(q: string): Promise<Song[]> {
         const response = await api.get(`media/songs/search?q=${q}`);
         return response.data;
     },
+
+    async getRandomSong(): Promise<Song> {
+        return api.get('/media/songs/random')
+            .then(response => response.data);
+    }
 }; 

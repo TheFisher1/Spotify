@@ -4,26 +4,23 @@ import { Song, formatDuration } from '../types';
 interface SongCardProps {
     song: Song;
     setCurrentTrack: (track: any) => void;
-    handlePlayPause: () => void;
 }
 
 export function SongCard({
     song,
-    setCurrentTrack,
-    handlePlayPause
+    setCurrentTrack
 }: SongCardProps) {
 
     const handlePlay = () => {
         setCurrentTrack({
             id: song.id?.toString() || '1',
             title: song.title,
-            artist: typeof song.artist === 'string' ? song.artist : song.artist?.name || 'Unknown Artist',
-            album: typeof song.album === 'string' ? song.album : song.album?.name || 'Unknown Album',
+            artist: song.artist?.name,
+            album: song.album?.name,
             duration: formatDuration(song.duration),
             cover: song.thumbnail || '',
             audioUrl: song.url
         });
-        handlePlayPause();
     };
 
     return (

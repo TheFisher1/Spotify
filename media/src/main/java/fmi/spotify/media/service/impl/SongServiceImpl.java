@@ -66,4 +66,9 @@ public class SongServiceImpl implements SongService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public SongDto getRandomSongDto() {
+        return SongDto.fromSong(songRepository.findRandomSong());
+    }
+
 }

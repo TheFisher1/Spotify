@@ -7,7 +7,6 @@ interface PlaylistProps {
   title: string;
   description: string;
   setCurrentTrack: (track: any) => void;
-  handlePlayPause: () => void;
   playlist: Playlist;
   onPlaylistSelect?: (playlist: Playlist) => void;
 }
@@ -17,7 +16,6 @@ export function PlaylistCard({
   title,
   description,
   setCurrentTrack,
-  handlePlayPause,
   playlist,
   onPlaylistSelect
 }: PlaylistProps) {
@@ -41,8 +39,6 @@ export function PlaylistCard({
           audioUrl: firstSong.url
         });
       }
-
-      handlePlayPause();
     } catch (error) {
       setCurrentTrack(null);
     }
@@ -52,7 +48,7 @@ export function PlaylistCard({
     <div key={id} className="bg-zinc-900 p-4 rounded-lg hover:bg-zinc-800 transition-colors group relative">
       <div className="relative mb-4">
         <img
-          src={playlist?.coverUrl}
+          src={playlist.coverUrl}
           alt={title}
           className="w-full aspect-square object-cover rounded shadow-lg"
           onError={(e) => {

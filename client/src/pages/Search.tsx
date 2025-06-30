@@ -6,10 +6,9 @@ import { Search as SearchIcon } from 'lucide-react';
 
 interface SearchProps {
     setCurrentTrack: (track: any) => void;
-    handlePlayPause: () => void;
 }
 
-export function Search({ setCurrentTrack, handlePlayPause }: SearchProps) {
+export function Search({ setCurrentTrack }: SearchProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [songs, setSongs] = useState<Song[]>([]);
     const [loading, setLoading] = useState(false);
@@ -84,7 +83,6 @@ export function Search({ setCurrentTrack, handlePlayPause }: SearchProps) {
                             <SongCollection
                                 songs={songs}
                                 setCurrentTrack={setCurrentTrack}
-                                handlePlayPause={handlePlayPause}
                             />
                         </section>
                     )}
