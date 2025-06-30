@@ -18,4 +18,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     List<Song> findLikedSongsByUserId(@Param("userId") Long userId);
 
     int countBySong_Id(Long songId);
+
+    boolean existsByUserIdAndSongId(Long userId, Long songId);
+
 }

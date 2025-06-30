@@ -34,19 +34,19 @@ public class ArtistController {
     }
 
     @PostMapping
-    public ResponseEntity<Artist> create(@RequestBody Artist artist) {
+    public ResponseEntity<Artist> createArtist(@RequestBody Artist artist) {
         return ResponseEntity.ok(artistService.createArtist(artist));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Artist> update(@PathVariable Long id, @RequestBody Artist artist) {
+    public ResponseEntity<Artist> updateArtist(@PathVariable Long id, @RequestBody Artist artist) {
         return artistService.updateArtist(id, artist)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteArtist(@PathVariable Long id) {
         artistService.deleteArtist(id);
         return ResponseEntity.ok().build();
     }

@@ -12,4 +12,6 @@ public interface LikeService {
     List<Song> getLikedSongs(Long userId);
 
     int countBySongId(Long songId);
+
+    boolean isSongLiked(Long userId, Long songId);
 }

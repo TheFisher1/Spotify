@@ -2,6 +2,7 @@ package bg.spotify.actions.controller;
 
 import bg.spotify.actions.service.LikeService;
 import fmi.spotify.media.model.Song;
+import fmi.spotify.media.model.SongDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/likes")
@@ -32,18 +34,28 @@ public class LikeController {
     }
 
     @GetMapping("/user/{userId}/songs")
-    public ResponseEntity<List<Song>> getLikedSongs(@PathVariable Long userId) {
+    public ResponseEntity<List<SongDto>> getLikedSongs(@PathVariable Long userId) {
         List<Song> likedSongs = likeService.getLikedSongs(userId);
         if (likedSongs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(likedSongs);
+
+        return ResponseEntity.ok(likedSongs.stream()
+            .map(SongDto::fromSong)
+            .collect(Collectors.toList()));
     }
 
     @GetMapping("/count/song/{songId}")
     public ResponseEntity<Integer> countBySong(@PathVariable Long songId) {
         int count = likeService.countBySongId(songId);
         return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/check/user/{userId}/song/{songId}")
+    public ResponseEntity<Boolean> isSongLiked(@PathVariable Long userId,
+                                               @PathVariable Long songId) {
+        boolean liked = likeService.isSongLiked(userId, songId);
+        return ResponseEntity.ok(liked);
     }
 
 }

@@ -68,4 +68,7 @@ public class LikeServiceImpl implements LikeService {
         return likeRepository.countBySong_Id(songId);
     }
 
+    public boolean isSongLiked(Long userId, Long songId) {
+        return likeRepository.existsByUserIdAndSongId(userId, songId);
+    }
 }
