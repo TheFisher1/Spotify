@@ -2,7 +2,7 @@ package fmi.spotify.media.model;
 
 import bg.spotify.artist.model.Artist;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
+
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
