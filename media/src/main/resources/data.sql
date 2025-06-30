@@ -52,7 +52,11 @@ INSERT INTO song (title, duration, album_id, artist_id) VALUES
 ('Waves', 225, 11, 8),
 ('Heroes Tonight feat. Johnning', 198, 12, 9),
 ('Walk', 214, 13, 10),
-('House of memories', 208, 14, 11);
+('House of memories', 208, 14, 11),
+('Addicted to You', 148, 1, 1),
+('Heart Upon My Sleeve', 280, 1, 1),
+('Wake Me Up', 249, 1, 1),
+('Liar Liar', 232, 1, 1);
 
 INSERT INTO song_genres (song_id, genre_id) VALUES
 (1, 1),
@@ -69,11 +73,16 @@ INSERT INTO song_genres (song_id, genre_id) VALUES
 (12, 3),
 (13, 1),
 (14, 6),
-(15, 4); 
+(15, 4),
+(16, 1),
+(17, 1),
+(18, 1),
+(19, 1),
+(20, 1);
 
 INSERT INTO playlist (name, description, is_public) VALUES ('Home Workout', 'Chill songs', true), ('Techno', 'Techno songs', true), ('Pop', 'Pop songs', true);
 
-INSERT INTO playlist_songs (playlist_id, song_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10), (2, 11), (2, 12), (2, 13), (2, 14), (2, 15), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8), (3, 9), (3, 10), (3, 11), (3, 12), (3, 13), (3, 14), (3, 15);
+INSERT INTO playlist_songs (playlist_id, song_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 7), (1, 10), (1, 11), (1, 14), (1, 16), (2, 3), (2, 4), (2, 6), (2, 11), (2, 12), (2, 13), (2, 15), (2, 17), (2, 18), (3, 1), (3, 2), (3, 4), (3, 5), (3, 6), (3, 7), (3, 12), (3, 14), (3, 15), (3, 19), (3, 20);
 
 ALTER TABLE song ADD COLUMN IF NOT EXISTS search_vector tsvector;
 
