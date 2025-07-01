@@ -65,11 +65,13 @@ public class RecommendationServiceImpl implements RecommendationService {
     }
 
     @Override
-    public List<Integer> getRecommendedSongs(Long userId, int count) {
+    public List<Long> getRecommendedSongs(Long userId, int count) {
         try {
             RecommendationResponse response = recombeeClient.send(
                     new RecommendItemsToUser("" + userId, count));
-            return Arrays.asList(response.getIds()).stream().map(id -> Integer.parseInt(id)).collect(Collectors.toList());
+            return Arrays.stream(response.getIds())
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
         } catch (ApiException e) {
             log.error("Recombee exception occurred when requesting recommendations", e);
             return Collections.emptyList();
