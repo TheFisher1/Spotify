@@ -31,3 +31,6 @@ target/
 node_modules/
 
 .env
+
+# self-signed ssl certificate
+*.p12

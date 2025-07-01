@@ -14,7 +14,6 @@ public class SecurityConfig {
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
                 .authorizeExchange(auth -> auth
                         .anyExchange().permitAll())
                 .httpBasic(httpBasic -> httpBasic.disable())

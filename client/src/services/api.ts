@@ -1,12 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { authService } from './authService';
 import { jwtUtils } from '../utils/jwtUtils';
-
-const BaseURL = import.meta.env.VITE_API_URL
+import { devConfig } from '../config';
 
 const api: AxiosInstance = axios.create({
-    baseURL: BaseURL,
-    timeout: 10000,
+    baseURL: devConfig.baseApiUrl,
+    timeout: devConfig.timeout,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -24,6 +23,7 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
+        console.log(error)
         return Promise.reject(error);
     }
 );
@@ -33,6 +33,8 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
+        console.log(error)
+
         if (error.response?.status === 401) {
             authService.logout();
             window.location.href = '/';
