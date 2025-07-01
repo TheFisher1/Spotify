@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import fmi.spotify.media.model.PlaylistDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,10 @@ public class PlaylistServiceImpl implements PlaylistService {
     public Optional<Playlist> getPlaylistById(Long id) {
         return playlistRepository.findById(id);
     }
-
+    @Override
+    public Optional<PlaylistDTO> getPlaylistDTOById(Long id) {
+        return getPlaylistById(id).map(PlaylistDTO::fromPlaylist);
+    }
     @Override
     public Playlist createPlaylist(Playlist playlist) {
         return playlistRepository.save(playlist);

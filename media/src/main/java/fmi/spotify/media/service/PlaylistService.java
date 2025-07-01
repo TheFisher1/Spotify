@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import fmi.spotify.media.model.Playlist;
+import fmi.spotify.media.model.PlaylistDTO;
 import fmi.spotify.media.model.SongDto;
 
 public interface PlaylistService {
     Optional<Playlist> getPlaylistById(Long id);
+    Optional<PlaylistDTO> getPlaylistDTOById(Long id);
 
     Playlist createPlaylist(Playlist playlist);
 

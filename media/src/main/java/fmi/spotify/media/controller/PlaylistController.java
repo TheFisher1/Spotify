@@ -29,14 +29,10 @@ public class PlaylistController {
     private PlaylistService playlistService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Playlist> getPlaylistById(@PathVariable Long id) {
+    public ResponseEntity<PlaylistDTO> getPlaylistById(@PathVariable Long id) {
+        var playlist = playlistService.getPlaylistDTOById(id);
+        return playlist.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        var playlist = playlistService.getPlaylistById(id);
-        if (playlist.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(playlist.get());
     }
 
     @PostMapping
