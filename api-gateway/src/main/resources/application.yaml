@@ -1,5 +1,10 @@
 server:
-  port: 8080
+  port: ${HTTPS_SERVER_PORT}
+  ssl:
+    key-store: ${KEY_STORE}
+    key-store-password: ${KEY_STORE_PASSWORD}
+    key-store-type: ${KEY_STORE_TYPE}
+    key-alias: ${KEY_ALIAS}
 
 spring:
   application:
@@ -10,7 +15,8 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:5173"
+              - ${HTTP_CLIENT_URL}
+              - ${HTTPS_CLIENT_URL}
             allowedMethods:
               - GET
               - POST
@@ -20,6 +26,7 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
+            maxAge: 3600
       routes:
         - id: users-service
           uri: ${USERS_SERVICE_URL}
