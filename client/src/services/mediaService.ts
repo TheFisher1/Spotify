@@ -114,8 +114,8 @@ export const mediaService = {
         return response.data;
     },
 
-    async getRandomSong(): Promise<Song> {
-        return api.get('/media/songs/random')
+    async getRandomSong(userId : number): Promise<Song> {
+        return api.get(`/media/songs/random?userId=${userId}`)
             .then(response => response.data);
     }
 }; 

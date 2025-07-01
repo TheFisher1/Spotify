@@ -2,9 +2,11 @@ package fmi.spotify.media.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import bg.spotify.recommendations.service.RecommendationService;
+import fmi.spotify.media.exceptions.SongNotFoundException;
 import fmi.spotify.media.model.Song;
 import fmi.spotify.media.model.SongDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class SongServiceImpl implements SongService {
     private SongRepository songRepository;
     @Autowired
     private RecommendationService recommendationService;
+
+    private static final int RANDOM_SONG_COUNT = 5;
 
     @Override
     public List<Song> getAllSongs(int pageSize, int pageNumber) {
@@ -68,8 +72,13 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDto getRandomSongDto() {
-        return SongDto.fromSong(songRepository.findRandomSong());
+    public SongDto getRandomSongDto(Long userId) {
+        List<Long> songs = recommendationService.getRecommendedSongs(userId, RANDOM_SONG_COUNT);
+        Random random = new Random();
+        int index = random.nextInt(RANDOM_SONG_COUNT);
+        return songRepository.findById(songs.get(index))
+            .map(SongDto::fromSong)
+            .orElseThrow(SongNotFoundException::new);
     }
 
 }
