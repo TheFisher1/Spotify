@@ -15,13 +15,10 @@ This project follows a microservices architecture pattern with the following com
 5. **Actions Service** (`actions/`) - User interactions (likes, follows)
 6. **Recommendations Service** (`recommendations/`) - Music recommendations using Recombee
 
-### Frontend
-
-- **React Client** (`client/`) - Modern React application with TypeScript, Tailwind CSS, and Vite
-
 ## 🚀 Technology Stack
 
 ### Backend
+
 - **Java 21** with Spring Boot 3.4.5
 - **Spring Cloud Gateway** for API routing
 - **Spring Security** with JWT authentication
@@ -29,7 +26,8 @@ This project follows a microservices architecture pattern with the following com
 - **Maven** for dependency management
 - **Recombee** for recommendation engine
 
-### Frontend
+### Client
+
 - **React 18** with TypeScript
 - **Vite** for build tooling
 - **Tailwind CSS** for styling
@@ -39,7 +37,7 @@ This project follows a microservices architecture pattern with the following com
 
 ## 📁 Project Structure
 
-```
+```plaintext
 Spotify/
 ├── api-gateway/          # API Gateway service
 ├── users/               # User authentication service
@@ -54,27 +52,29 @@ Spotify/
 ## 🔧 Setup and Installation
 
 ### Prerequisites
+
 - Java 21
 - Node.js 18+
 - Maven 3.8+
-- Docker (optional, for containerization)
 
 ### Backend Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd Spotify
    ```
 
 2. **Build all microservices**
+
    ```bash
    mvn clean install
    ```
 
 3. **Configure environment variables**
-   
-   Create environment variables for each service. Key variables include:
+
+   Create environment variables for the project. Env variables include:
    - `JWT_SECRET` - Secret key for JWT token generation
    - `USERS_SERVICE_URL` - Users service endpoint
    - `MEDIA_SERVICE_URL` - Media service endpoint
@@ -83,53 +83,63 @@ Spotify/
    - `RECOMMENDATIONS_SERVICE_URL` - Recommendations service endpoint
    - `HTTPS_SERVER_PORT` - API Gateway port
    - `HTTP_CLIENT_URL` / `HTTPS_CLIENT_URL` - Frontend URLs for CORS
+   - `JWT_SECRET` - Secret used for the creation of the jwt token
+   - `SPRING_APPLICATION_NAME`
+   - `SPRING_DATASOURCE_URL`
+   - `SPRING_DATASOURCE_USERNAME`
+   - `SPRING_DATASOURCE_PASSWORD`
+   - `SPRING_DATASOURCE_DRIVER_CLASS_NAME`
+
+   - `USERS_SERVICE_PORT`
+   - `MEDIA_SERVICE_PORT`
+   - `ARTIST_SERVICE_PORT`
+   - `ACTIONS_SERVICE_PORT`
+   - `RECOMMENDATIONS_SERVICE_PORT`
+
+   - `HTTP_SERVER_PORT` - HTTP port for the api gateway
+   - `HTTPS_SERVER_PORT` - HTTPS port for the api gateway
+
+   - `KEY_STORE` - Key store for the ssl certificate
+   - `KEY_STORE_PASSWORD` - Password for the ssl certificate
+   - `KEY_STORE_TYPE` - Key store type(primarily  JKS or PKCS1)
+   - `KEY_ALIAS` - Alias of the ssl certificate
 
 4. **Start the services**
-   
+
    Start each microservice in separate terminals:
+
    ```bash
-   # API Gateway
    cd api-gateway && mvn spring-boot:run
    
-   # Users Service
    cd users && mvn spring-boot:run
    
-   # Media Service
    cd media && mvn spring-boot:run
    
-   # Artist Service
    cd artist && mvn spring-boot:run
    
-   # Actions Service
    cd actions && mvn spring-boot:run
    
-   # Recommendations Service
    cd recommendations && mvn spring-boot:run
    ```
 
 ### Frontend Setup
 
 1. **Navigate to client directory**
+
    ```bash
    cd client
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
-3. **Configure API endpoint**
-   
-   Update `src/config.ts` with your API Gateway URL:
-   ```typescript
-   export const devConfig = {
-       baseApiUrl: 'http://localhost:8080',
-       timeout: 10000
-   };
-   ```
+3. **Set env variables**
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -137,6 +147,7 @@ Spotify/
 ## 🎵 Features
 
 ### Core Features
+
 - **User Authentication** - Registration, login, STATELESS JWT-based authentication
 - **Music Streaming** - Play songs with audio controls
 - **Playlist Management** - Create, edit, and manage playlists
@@ -146,6 +157,7 @@ Spotify/
 - **Recommendations** - Personalized music recommendations
 
 ### Technical Features
+
 - **Microservices Architecture** - Scalable and maintainable backend
 - **API Gateway** - Centralized routing and security configuration
 - **JWT Authentication** - Secure token-based authentication
@@ -164,7 +176,9 @@ The application uses JWT (JSON Web Tokens) for authentication:
 ## 🎨 UI Components
 
 ### Main Components
+
 - **Navigation** - Top navigation bar with search and user menu
+
 - **Sidebar** - Left sidebar with navigation links
 - **Music Player** - Bottom player with playback controls
 - **Song Cards** - Individual song display components
@@ -172,6 +186,7 @@ The application uses JWT (JSON Web Tokens) for authentication:
 - **Auth Modals** - Login and registration forms
 
 ### Pages
+
 - **Home** - Main dashboard with featured content
 - **Search** - Search interface for finding music
 - **Landing Page** - Public landing page for non-authenticated users
@@ -179,10 +194,12 @@ The application uses JWT (JSON Web Tokens) for authentication:
 ## 🔌 API Endpoints
 
 ### Authentication (`/auth`)
+
 - `POST /auth/register` - User registration
 - `POST /auth/login` - User login
 
 ### Media (`/media`)
+
 - `GET /media/songs` - Get all songs (paginated)
 - `GET /media/songs/{songId}` - Get specific song
 - `GET /media/songs/artists/{artistId}` - Get songs by artist
@@ -190,22 +207,26 @@ The application uses JWT (JSON Web Tokens) for authentication:
 - `GET /media/songs/random` - Get random song
 
 ### Artists (`/artists`)
+
 - `GET /artists` - Get all artists
 - `GET /artists/{artistId}` - Get specific artist
 
 ### Actions (`/likes`, `/follows`)
+
 - `POST /likes` - Like a song
 - `DELETE /likes/{songId}` - Unlike a song
 - `POST /follows` - Follow an artist
 - `DELETE /follows/{artistId}` - Unfollow an artist
 
 ### Recommendations (`/recommendations`)
+
 - `GET /recommendations/songs` - Get song recommendations
 - `GET /recommendations/artists` - Get artist recommendations
 
 ## 🗄️ Database Schema
 
 ### Users
+
 - `id` - Primary key
 - `username` - Unique username
 - `email` - Unique email address
@@ -215,6 +236,7 @@ The application uses JWT (JSON Web Tokens) for authentication:
 - `country` - User country
 
 ### Songs
+
 - `id` - Primary key
 - `title` - Song title
 - `duration` - Song duration
@@ -223,29 +245,32 @@ The application uses JWT (JSON Web Tokens) for authentication:
 - `genres` - Many-to-many relationship with genres
 
 ### Playlists
+
 - `id` - Primary key
 - `name` - Playlist name
 - `user_id` - Foreign key to user
 - `songs` - Many-to-many relationship with songs
 
 ### Likes
+
 - `id` - Primary key
 - `user_id` - Foreign key to user
 - `song_id` - Foreign key to song
 
 ### Follows
+
 - `id` - Primary key
 - `user_id` - Foreign key to user
 - `artist_id` - Foreign key to artist
 
 ## Some Limitations
+
 - All communication is synchronous, meaning that when facing a bigger load, the system may and most probably will not be able to function properly.
 - Currently the system lacks proper error handling and retry mechanisms for inter-service communication.
 - No caching layer is implemented, which could lead to performance issues with repeated database queries.
 - The system doesn't implement circuit breakers or fallback mechanisms for service failures.
 - No rate limiting is implemented to prevent API abuse.
 - No automated backup and recovery mechanisms for data persistence.
-
 
 ## 🚀 Deployment
 
@@ -254,10 +279,12 @@ This project can run in any environment with a Java Runtime Environment (JRE) in
 ### Further Development
 
 ### Docker Deployment
-Each microservice can be easily containerized using Docker. The only requirement 
+
+Each microservice can be easily containerized using Docker. The only requirement
 is to add Dockerfile for each microservice. Then the project can be easily deployed on container-based products such as Docker Swarm or K8s as well.
 
 ### Production Considerations
+
 - Use environment variables for configuration
 - Implement proper logging and monitoring
 - Set up database connections with connection pooling
@@ -267,6 +294,7 @@ is to add Dockerfile for each microservice. Then the project can be easily deplo
 - Scale horizontally to face the load
 
 ## 🧪 Testing
+
 Another key point to further develop are the tests of this system.
 Tests on Backend can be run using maven, more precisely using the following command:
 
@@ -278,6 +306,7 @@ cd <component> && mvn test
 ```
 
 ### Frontend Testing
+
 ```bash
 cd client
 npm test
@@ -288,7 +317,7 @@ npm test
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-5. Submit a pull request
+4. Submit a pull request
 
 ## 📄 License
 
