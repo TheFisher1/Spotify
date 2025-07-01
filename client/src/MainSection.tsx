@@ -94,7 +94,7 @@ export function MainSection() {
                 };
                 setCurrentTrack(track);
             } else {
-                mediaService.getRandomSong().then(song => setCurrentTrack({
+                mediaService.getRandomSong(user!.id!).then(song => setCurrentTrack({
                     id: song.id!.toString(), title: song.title,
                     artist: song.artist!.name,
                     album: song.album!.name,
