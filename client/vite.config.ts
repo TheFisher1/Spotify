@@ -1,42 +1,46 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
-import { devConfig } from './src/config';
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
 
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    proxy: {
-      '/auth': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/media': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/artists': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/likes': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/follows': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
-      },
-      '/recommendations': {
-        target: devConfig.baseApiUrl,
-        changeOrigin: true,
-        secure: false,
+  const baseApiUrl = env.VITE_API_URL
+
+  return {
+    plugins: [react()],
+    server: {
+      proxy: {
+        '/auth': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/media': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/artists': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/likes': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/follows': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/recommendations': {
+          target: baseApiUrl,
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
-  },
+  }
 })
