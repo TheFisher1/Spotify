@@ -1,5 +1,6 @@
 package fmi.spotify.api_gateway;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.server.WebServerException;
@@ -15,12 +16,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class HttpServer implements ApplicationListener<ContextRefreshedEvent> {
     private WebServer httpServer;
+    @Value("${HTTP_SERVER_PORT}")
+    private int httpPort;
 
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         if (httpServer == null) {
             try {
-                NettyReactiveWebServerFactory factory = new NettyReactiveWebServerFactory(8080);
+                NettyReactiveWebServerFactory factory = new NettyReactiveWebServerFactory(httpPort);
 
                 HttpHandler httpHandler = (ServerHttpRequest request, ServerHttpResponse response) -> {
                     response.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
