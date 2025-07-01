@@ -49,7 +49,7 @@ public class SongController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<SongDto> getRandomSong() {
-        return ResponseEntity.ok(songService.getRandomSongDto());
+    public ResponseEntity<SongDto> getRandomSong(@RequestParam Long userId) {
+        return ResponseEntity.ok(songService.getRandomSongDto(userId));
     }
 }
