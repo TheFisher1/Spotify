@@ -265,7 +265,6 @@ The application uses JWT (JSON Web Tokens) for authentication:
 
 ## Some Limitations
 
-- All communication is synchronous, meaning that when facing a bigger load, the system may and most probably will not be able to function properly.
 - Currently the system lacks proper error handling and retry mechanisms for inter-service communication.
 - No caching layer is implemented, which could lead to performance issues with repeated database queries.
 - The system doesn't implement circuit breakers or fallback mechanisms for service failures.
